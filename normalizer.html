@@ -9,7 +9,7 @@
     <script>
       var normalize =  normalizr.normalize;
       var schema = normalizr.schema;
-      document.write(normalize({id:"v1",name:"vimal"},schema("contacts")))
+      document.write(JSON.stringify(normalize({id:"v1",name:"vimal"},schema("contacts"))),null,4)
     </script>
     </pre>
   </body>
