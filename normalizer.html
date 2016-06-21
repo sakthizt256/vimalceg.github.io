@@ -4,7 +4,7 @@
 </head>
   <body>
     <pre>
-      Normalization using https://github.com/paularmstrong/normalizr      
+      Normalization using https://github.com/paularmstrong/normalizr
 
     <script>
     function mockObj(nokey){
@@ -43,7 +43,7 @@
       var norObj=normalize(arrObj,normalizr.arrayOf(ticket));
       console.timeEnd("start")
       var end=new Date().getTime();
-      document.write("  time taken ->"+(end-st) +"<br/>");
+      document.write("<div style="color:red">time taken ->"+(end-st) +"</div>");
 
       document.write(JSON.stringify(norObj,null,4));
 

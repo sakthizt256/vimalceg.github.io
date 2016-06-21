@@ -1,7 +1,26 @@
 <html>
   <body>
     <h1>Blog</h1>
-      <a href="normalizer.html">Normalizer using - https://github.com/paularmstrong/normalizr</a><br/>
-      <a href="normalizer1.html">Normalizer using - https://github.com/vimalceg/normalizr</a>
+      Scenario
+        A ticket has one contact. Contact has on account. Here i created 100 tickets and each ticket has 50 keys and one contact.
+      Similarly contact and account has 50 keys.
+
+      Both normalizr
+      input
+        ticket:[{
+          id:"1",
+          keys...(50)
+          contact:{
+            id:"1",
+            keys...(50)
+            account:{
+              id:"1",
+              keys...(50)
+            }
+          }
+        }]
+
+      <a href="normalizer.html">Normalizer using - </a> repo - <a href="https://github.com/paularmstrong/normalizr">https://github.com/paularmstrong/normalizr</a><br/>
+      <a href="normalizer1.html">Normalizer using - </a> repo - <a href="https://github.com/vimalceg/normalizr"> https://github.com/vimalceg/normalizr</a>
   </body>
 </html>

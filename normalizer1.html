@@ -4,7 +4,7 @@
 </head>
   <body>
     <pre>
-      normalize(obj,schema)
+
 
     <script>
     function mockObj(nokey){
@@ -31,6 +31,7 @@
       var arrayOf = normalizr1.arrayOf;
       console.log(normalizr1)
       var st=new Date().getTime();
+
       console.time("normalize")
       norObj=normalize(arrObj,
         arrayOf(
@@ -48,7 +49,8 @@
       console.timeEnd("normalize")
 
       var end=new Date().getTime();
-      document.write("  time taken ->"+(end-st) +"<br/>");
+      document.write("<div style="color:red">time taken ->"+(end-st) +"</div>");
+
 
       document.write(JSON.stringify(norObj,null,4));
 
