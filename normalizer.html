@@ -43,7 +43,7 @@
       var norObj=normalize(arrObj,normalizr.arrayOf(ticket));
       console.timeEnd("start")
       var end=new Date().getTime();
-      document.write("<div style='color:red'>time taken ->"+(end-st) +"ms </div>");
+      document.write("<div style='color:red'>time taken : "+(end-st) +"ms </div>");
 
       document.write(JSON.stringify(norObj,null,4));
 
