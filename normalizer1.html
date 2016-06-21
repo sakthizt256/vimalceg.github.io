@@ -1,10 +1,10 @@
 <html>
 <head>
-  <script src="./js/normalizr.min.js" type="application/javascript"></script>
+  <script src="./js/normalizr1.min.js" type="application/javascript"></script>
 </head>
   <body>
     <pre>
-      Normalization using https://github.com/paularmstrong/normalizr      
+      normalize(obj,schema)
 
     <script>
     function mockObj(nokey){
@@ -26,22 +26,27 @@
     }
 
 
-      var normalize =  normalizr.normalize;
-      var Schema = normalizr.Schema;
-      console.log(normalizr)
-      var ticket = new Schema("tickets");
-      var contact = new Schema("contacts");
-      var account = new Schema("accounts");
-      contact.define({
-        account:account
-      })
-      ticket.define({
-        contact:contact
-      })
+      var normalize =  normalizr1.normalize;
+      var schema = normalizr1.schema;
+      var arrayOf = normalizr1.arrayOf;
+      console.log(normalizr1)
       var st=new Date().getTime();
-      console.time("start")
-      var norObj=normalize(arrObj,normalizr.arrayOf(ticket));
-      console.timeEnd("start")
+      console.time("normalize")
+      norObj=normalize(arrObj,
+        arrayOf(
+          schema("tickets",{
+            mapping:{
+              contact:schema("contacts",{
+                mapping:{
+                  account:schema("accounts")
+                }
+              })
+            }
+          })
+        )
+      )
+      console.timeEnd("normalize")
+
       var end=new Date().getTime();
       document.write("  time taken ->"+(end-st) +"<br/>");
 
