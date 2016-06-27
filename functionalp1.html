@@ -1,0 +1,35 @@
+<html>
+  <body>
+    <pre>
+      functional
+      pros
+      cons
+      nested calls little confusing
+
+      function add(a,b){
+        return a+b;
+      }
+      function mul(a,b){
+        return a*b;
+      }
+      var a=1;
+      var b=2;
+      console.log(mul(add(a,b),add(a,b)))
+        console.log((1+2)*(1+2));
+    </pre>
+    <script>
+    function add(a,b){
+      return a+b;
+    }
+    function mul(a,b){
+      return a*b;
+    }
+    var a=1;
+    var b=2;
+    console.log(mul(add(a,b),add(a,b)))
+      console.log((1+2)*(1+2));
+
+    </script>
+
+  </body>
+</html>

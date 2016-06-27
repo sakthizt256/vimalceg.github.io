@@ -1,0 +1,47 @@
+<html>
+  <body>
+    <pre>
+    Immutable code
+    pros:
+    const:
+      function Number(a){
+        this.a=a;
+      }
+      Number.prototype.add=function(b){
+        var t=new Number();
+        t.a=this.a+b.a;
+        return t;
+      }
+      Number.prototype.mul=function(b){
+        var t = new Number();
+        t.a=this.a*b.a;
+        return t;
+      }
+      var n1=new Number(1);
+      var n2=new Number(2);
+      console.log((n1.add(n2)).mul((n1.add(n2))).a);
+      console.log((1+2)*(1+2));
+    </pre>
+    <script>
+    function Number(a){
+      this.a=a;
+    }
+    Number.prototype.add=function(b){
+      var t=new Number();
+      t.a=this.a+b.a;
+      return t;
+    }
+    Number.prototype.mul=function(b){
+      var t = new Number();
+      t.a=this.a*b.a;
+      return t;
+    }
+    var n1=new Number(1);
+    var n2=new Number(2);
+    console.log((n1.add(n2)).mul((n1.add(n2))).a);
+    console.log((1+2)*(1+2));
+
+    </script>
+
+  </body>
+</html>

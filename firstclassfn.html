@@ -1,0 +1,46 @@
+<html>
+  <body>
+    <pre>
+      functional
+      First class function
+        It is not special. It is like other data types.
+        write a common/generic function.
+        naming to generic function while binding with data
+      pros
+      cons
+      function multiplicationTable(a){
+        return function(b){
+          for(var i=1;i&lt;=b;i++){
+            console.log(i+"*"+a+"="+i*a);
+          }
+        }
+      }
+      function multiplicationTable10(no){
+        for(var i=1;i&lt;=no;i++){
+          console.log(i+"*"+10+"="+i*10);
+        }
+      }
+      var mul10=multiplicationTable(10);
+      console.log(mul10(20));
+      console.log(multiplicationTable10(20));
+    </pre>
+    <script>
+    function multiplicationTable(a){
+      return function(b){
+        for(var i=1;i<=b;i++){
+          console.log(i+"*"+a+"="+i*a);
+        }
+      }
+    }
+    function multiplicationTable10(no){
+      for(var i=1;i<=no;i++){
+        console.log(i+"*"+10+"="+i*10);
+      }
+    }
+    var mul10=multiplicationTable(10);
+    console.log(mul10(20));
+    console.log(multiplicationTable10(20));
+    </script>
+
+  </body>
+</html>
