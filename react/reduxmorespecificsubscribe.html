@@ -1,0 +1,123 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+
+    </pre>
+    <script  type="text/babel">
+
+    function batchedSubscribe(batch) {
+      if (typeof batch !== 'function') {
+        throw new Error('Expected batch to be a function.');
+      }
+      let groupListeners={};
+      function groupSubscribe(id,listener) {
+        if (typeof listener !== 'function') {
+          throw new Error('Expected listener to be a function.');
+        }
+
+        let isSubscribed = true;
+        if(!groupListeners[id])
+        groupListeners[id]=[];
+        groupListeners[id].push(listener);
+
+        return function unsubscribe() {
+          if (!isSubscribed) {
+            return;
+          }
+
+          isSubscribed = false;
+          const index = groupListeners[id].indexOf(listener);
+          groupListeners[id].splice(index, 1);
+        };
+      }
+      function notifyAllGroupSubscribe(){
+        Object.keys(groupListeners).forEach((id)=>{
+          groupListeners[id].forEach((listener)=>{
+            listener();
+          });
+        });
+      }
+      function notifyGroupSubscribe(id){
+        groupListeners[id].forEach((listener)=>{
+          listener();
+        });
+      }
+      return next => (...args) => {
+        const store = next(...args);
+        /*function dispatch(...dispatchArgs) {
+          const res = store.dispatch(...dispatchArgs);
+          notifyListenersBatched();
+          return res;
+        }*/
+        return {
+          ...store,
+          groupDispatch:(action,id="global")=>{
+            console.log(action,id);
+            const res=store.dispatch(action);
+            if(id!="global"){
+              notifyGroupSubscribe(id)
+            }
+            else{
+              notifyAllGroupSubscribe()
+            }
+            return res;
+          },
+          subscribe:(listener,id="global")=>{
+              groupSubscribe(id,listener);
+          }
+        };
+      };
+    }
+      var todo=(module)=>(state=[],action)=>{
+        switch(action.type){
+          case `${module}_ADD`:
+            return [...state,action.data];
+          break;
+        }
+        return state;
+      };
+      var middleware=({dispatch,getState})=>(next)=>(action)=>{
+        if(!action.type){
+          return next(Object.assign({},action,{type:"TICKET_ADD"}));
+        }
+        return next(action);
+      }
+      var logmiddleware=({dispatch,getState})=>(next)=>(action)=>{
+        console.log("PreState",getState());
+        console.log("action",action);
+        var a=next(action);
+        console.log("NextState",getState());
+        return a;
+
+      }
+      console.profile("sub")
+      var createStoreWithMiddleware=Redux.applyMiddleware(/*middleware,*/logmiddleware)(Redux.createStore)
+      var timer=null;
+      var store=createStoreWithMiddleware(Redux.combineReducers({ticket:todo('TICKET'),contact:todo('CONTACT')}),{ticket:["todo0"]},batchedSubscribe(
+        (notify)=>{
+        }
+      ));
+      var unsubscribe1=store.subscribe(()=>{
+        console.log("1==>subscribe",store.getState())
+      },"1");
+      var unsubscribe2=store.subscribe(()=>{
+        console.log("global==>subscribe",store.getState())
+      });
+      store.groupDispatch({type:"TICKET_ADD",data:"todo1"},"1");
+    //  unsubscribe();
+      store.groupDispatch({type:"CONTACT_ADD",data:"todo1"});
+      console.profileEnd("sub")
+  //    store.dispatch({data:"todo3"});
+    </script>
+  </body>
+</html>

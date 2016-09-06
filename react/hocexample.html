@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script  type="text/babel">
+        class MenuPopup extends React.Component{
+            
+            render(){
+                return <div> {this.props.name} 
+                <div>popup status:{""+this.props.isPopupOpen}</div>
+                <div onClick={this.props.togglePopup}>Toggle</div>
+                {this.props.children}
+        </div>
+            }
+        }
+        
+        function HOC(Component){
+            var arr=[];
+            return class Popup extends React.Component{
+                constructor(props){
+                    super(props);
+                    this.state={isPopupOpen:false};
+                    this.togglePopup=this.togglePopup.bind(this);
+                }
+                componentDidMount(){
+                    arr.push(this);
+                }
+                togglePopup(){
+                    arr.forEach((p)=>{
+                        if(p.state.isPopupOpen && p!=this){
+                            p.setState({isPopupOpen:false});
+                        }
+                    });
+                    this.setState({isPopupOpen:!this.state.isPopupOpen});
+                }
+                render(){
+                    return <Component {...this.props} togglePopup={this.togglePopup} isPopupOpen={this.state.isPopupOpen}/>
+                }
+            }
+        }
+      MenuPopup = HOC(MenuPopup);
+      ReactDOM.render(
+        <div>
+            First : <MenuPopup name="popup1">
+                <MenuPopup name="popup3"/>
+            </MenuPopup>
+            <div>----</div>
+            Second:<MenuPopup name="popup2"/>
+        </div>,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

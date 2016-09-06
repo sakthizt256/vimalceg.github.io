@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    Basic react
+      1. Component have state then It is called stateful Component
+      2. Component rerender based on state changes
+    Scenario
+      Display count information. If the user click Increment text,
+      It increments count and display updated count information
+    
+    <script  type="text/babel">
+
+      class Counter extends React.Component{
+        constructor(){
+          super()
+          this.state={counter:0};
+          this.click=this.click.bind(this);
+        }
+        click(){
+          this.setState({counter:++this.state.counter});
+        }
+        render(){
+          return <div>{this.state.counter}<span onClick={this.click}>Increment</span></div>
+        }
+      }
+      ReactDOM.render(
+        <div>
+        <Counter/>
+        </div>,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+      scenario:
+      display counter information top and bottom of the ticket list
+      
+      Note:
+      Same logic needed in two/more places. split into separate component.
+    </pre>
+    <script  type="text/babel">
+      var TicketCounter =({count})=>{
+        return <div> Counter:
+        {
+          count?count:null
+        }
+        </div>
+      }
+      class TicketList extends React.Component{
+        constructor(){
+          super()
+          this.state={tickets:[]};
+          this.addDynamicTicket=this.addDynamicTicket.bind(this)
+        }
+        addDynamicTicket(){
+          var id=this.state.tickets.length+1;
+          var subj=Math.random().toString(36).substring(2);
+          this.state.tickets.push({id,subj});
+          this.setState({tickets:this.state.tickets})
+        }
+        render(){
+          return <div>
+          <button onClick={this.addDynamicTicket}>Add Dynamic Ticket</button>
+          <TicketCounter count={this.state.tickets.length}/>
+          {
+            this.state.tickets.map((ticket)=>{
+              return <div key={`ticket${ticket.id}`}>
+                <div>id:{ticket.id}</div>
+                <div>subject:{ticket.subj}</div>
+              </div>
+          })
+
+        }
+          <TicketCounter count={this.state.tickets.length}/>
+        </div>
+      }
+    }
+      ReactDOM.render(
+        <div>
+        <TicketList/>
+        </div>,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

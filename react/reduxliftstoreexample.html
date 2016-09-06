@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+
+    </pre>
+    <script  type="text/babel">
+
+    function liftStore(uireducer,initialUIState) {
+      var nextUIState=initialUIState;
+      function liftReducer(reducer){
+        console.log("lifted Reducer")
+        return (state,action)=>{
+          console.log("lifted Reducer called",action.type)
+          var nextEntityState=reducer(state,action)
+          var nextUIState=uireducer(initialUIState,action,nextEntityState)
+          console.log(nextUIState,nextEntityState,"---->");
+          return nextUIState;
+        }
+      }
+      return next => (reducer,initialState) => {
+        const store = next(liftReducer(reducer),initialState);
+        function dispatch(...dispatchArgs) {
+          console.log("lifted dispatch")
+          const res = store.dispatch(...dispatchArgs);
+          return res;
+        }
+        function getState(){
+          
+        }
+        return {
+          ...store,
+          dispatch
+        };
+      };
+    }
+      var todo=(module)=>(state=[],action)=>{
+        switch(action.type){
+          case `${module}_ADD`:
+            return [...state,action.data];
+          break;
+        }
+        return state;
+      };
+      var ticket=(state={},action)=>{
+        return state;
+      }
+      var ticketui=(state={},action)=>{
+        return state;
+      }
+
+      var logmiddleware=({dispatch,getState})=>(next)=>(action)=>{
+        console.log("PreState",getState());
+        console.log("action",action);
+        var a=next(action);
+        console.log("NextState",getState());
+        return a;
+
+      }
+      console.profile("sub")
+      var createStoreWithMiddleware=Redux.applyMiddleware(logmiddleware)(Redux.createStore)
+      var timer=null;
+      var store=createStoreWithMiddleware(Redux.combineReducers({ticket:ticket}),{ticket:{1:{id:1,subj:"ticket1"}}},liftStore(Redux.combineReducers({ticketui:ticketui})));
+      var unsubscribe=store.subscribe(()=>{
+        console.log("subscribe",store.getState())
+      });
+
+      store.dispatch({type:"TICKET_ADD",data:"todo1"});
+    //  unsubscribe();
+      store.dispatch({type:"CONTACT_ADD",data:"todo1"});
+      console.profileEnd("sub")
+  //    store.dispatch({data:"todo3"});
+    </script>
+  </body>
+</html>

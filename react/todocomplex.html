@@ -1,0 +1,192 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+
+    </pre>
+    <script  type="text/babel">
+      var compose=(...args)=>(state={},action)=>{
+        return args.reduceRight((result,arg)=>{
+          return Object.assign({},result,Object.keys(arg).reduce((r,key)=>{
+            var fn=arg[key];
+            var oldState=state[key];
+            var newState=fn(oldState,action,result);
+            r[key]=newState;
+            return r;
+          },{}));
+        },{})
+      }
+      var entityReducer={
+        todos:(state={},action,cState)=>{
+          console.log(action)
+          switch (action.type) {
+            case "Update_Todo":
+              return Object.assign({},state,action.data)
+            break;
+            default:
+            return state;
+          }
+
+        },
+        filters:(state={},action,cState)=>{
+
+          return state;
+        }
+      }
+      var uiReducer={
+        todoByFilters:(state={},action,cState)=>{
+          switch(action.type){
+            case 'Update_Todo':
+              return Object.keys(state).reduce((result,filterKey)=>{
+                var criteria=cState.filters[filterKey].criteria;
+                var todoKey=criteria[0].field;
+                var cval=criteria[0].value;
+                var check=criteria[0].condition;
+                var ids=[];
+                Object.keys(cState.todos).forEach((tkey)=>{
+                  var todo=cState.todos[tkey];
+                  if(check=="equals" && todo[todoKey]==cval ){
+                      ids.push(todo.id);
+                  }
+
+                });
+
+                result[filterKey]=ids;
+                return result;
+              },{})
+
+            break;
+          }
+          return state;
+        }
+      }
+      var todos={
+        1:{
+          id:1,
+          text:"ticket1",
+          completed:true
+        },
+        2:{
+          id:2,
+          text:"ticket2",
+          completed:false
+        },
+        3:{
+          id:3,
+          text:"ticket3",
+          completed:true
+        },
+        4:{
+          id:4,
+          text:"ticket4",
+          completed:true
+        },
+        5:{
+          id:5,
+          text:"ticket5",
+          completed:true
+        },
+        6:{
+          id:6,
+          text:"ticket6",
+          completed:true
+        },
+        7:{
+          id:7,
+          text:"ticket7",
+          completed:false
+        },
+        8:{
+          id:8,
+          text:"ticket8",
+          completed:true
+        },
+        9:{
+          id:9,
+          text:"ticket9",
+          completed:true
+        },
+        10:{
+          id:10,
+          text:"ticket5",
+          completed:true
+        }
+      };
+
+      var filters={
+        1:{
+          id:1,
+          name:"filter1",
+          criteria:[{
+            field:"text",
+            condition:"contains",
+            value:"ic"
+          }]
+        },
+        2:{
+          id:2,
+          name:"filter2",
+          criteria:[{
+            field:"text",
+            condition:"startsWith",
+            value:"ic"
+          }]
+        },
+        3:{
+          id:3,
+          name:"Completed",
+          criteria:[{
+            field:"completed",
+            condition:"equals",
+            value:true
+          }]
+        },
+        4:{
+          id:4,
+          name:"Not Completed",
+          criteria:[{
+            field:"completed",
+            condition:"equals",
+            value:false
+          }]
+        }
+    };
+    var todoByFilters={
+      1:[1,2],
+      2:[1,2,3],
+      3:[1,2,3],
+      4:[1,2,3,4]
+    }
+      var initialState ={
+        todos,
+        filters,
+        todoByFilters
+      }
+      var reducers=compose(uiReducer,entityReducer);
+      var store=Redux.createStore(reducers,initialState);
+      console.log(store.getState());
+      store.dispatch({type:'Update_Todo',data:{1:{
+        id:1,
+        text:"ticket1",
+        completed:false
+      }}});
+      console.log(store.getState());
+      store.dispatch({type:'Update_Todo',data:{1:{
+        id:1,
+        text:"ticket1",
+        completed:true
+      }}});
+      console.log(store.getState());
+
+    </script>
+  </body>
+</html>

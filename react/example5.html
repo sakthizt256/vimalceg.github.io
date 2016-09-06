@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+      Scenario
+        display ticket list.
+        Note:
+          1. ticket information will change based on time.
+        how to create app for ticket List
+    </pre>
+    <script  type="text/babel">
+      class TicketList extends React.Component{
+        constructor(){
+          super()
+          this.state={tickets:[{id:1,subj:"ticket1"},{id:2,subj:"ticket2"}]};
+        }
+        render(){
+          return <div>
+          {
+            this.state.tickets.map((ticket)=>{
+              return <div key={`ticket${ticket.id}`}>
+                <div>{ticket.id}</div>
+                <div>{ticket.subj}</div>
+              </div>
+          })
+        }
+
+        </div>
+      }
+    }
+      ReactDOM.render(
+        <div>
+        <TicketList/>
+        </div>,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

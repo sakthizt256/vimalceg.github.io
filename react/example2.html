@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+      Basic react
+        1. Create Custom Component using React
+
+        class HelloWorld extends React.Component{
+          render(){
+            return <h1>HelloWorld</h1>
+          }
+        }
+        ReactDOM.render(
+          <HelloWorld/>,
+          document.getElementById('react')
+        );
+    </pre>
+    <script  type="text/babel">
+      class HelloWorld extends React.Component{
+        render(){
+          return <h1>HelloWorld</h1>
+        }
+      }
+
+      ReactDOM.render(
+        <HelloWorld/>,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

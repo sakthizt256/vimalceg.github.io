@@ -1,0 +1,110 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+        Naming is matter.
+        Same logic repeat into different module, If you name it in module specific hard to reuse.
+        so Naming component is hard. deceide and give proper name
+
+        example
+        function addTwoNumber(a,b){
+          return a+b;
+        }
+        function concat(a,b){
+          return a+b;
+        }
+        both code are same but naming 
+        function add(a,b){
+          return a+b
+        }
+        var addTwoNumber=add;
+        var concat=add;
+    </pre>
+    <script  type="text/babel">
+      var Counter =({count})=>{
+        return <div> Count :
+        {
+          count?count:null
+        }
+        </div>
+      }
+      class TicketList extends React.Component{
+        constructor(){
+          super()
+          this.state={tickets:[]};
+          this.addDynamicTicket=this.addDynamicTicket.bind(this)
+        }
+        addDynamicTicket(){
+          var id=this.state.tickets.length+1;
+          var subj=Math.random().toString(36).substring(2);
+          this.state.tickets.push({id,subj});
+          this.setState({tickets:this.state.tickets})
+        }
+        render(){
+          return <div>
+          <button onClick={this.addDynamicTicket}>Add Dynamic Ticket</button>
+          <Counter count={this.state.tickets.length}/>
+          {
+            this.state.tickets.map((ticket)=>{
+              return <div key={`ticket${ticket.id}`}>
+                <div>id:{ticket.id}</div>
+                <div>subject:{ticket.subj}</div>
+              </div>
+          })
+        }
+
+        </div>
+      }
+    }
+    class ContactList extends React.Component{
+      constructor(){
+        super()
+        this.state={contacts:[]};
+        this.addContact=this.addContact.bind(this)
+      }
+      addContact(){
+        var id=this.state.contacts.length+1;
+        var name=Math.random().toString(36).substring(2);
+        this.state.contacts.push({id,name});
+        this.setState({contacts:this.state.contacts})
+      }
+      render(){
+        return <div>
+        <button onClick={this.addContact}>Add Contact</button>
+        <Counter count={this.state.contacts.length}/>
+        {
+          this.state.contacts.map((contact)=>{
+            return <div key={`contact${contact.id}`}>
+              <div>id:{contact.id}</div>
+              <div>Name:{contact.name}</div>
+            </div>
+        })
+      }
+
+      </div>
+    }
+  }
+    var SupportApp=()=>{
+      return <div>
+        <TicketList/>
+        <ContactList/>
+      </div>
+    }
+      ReactDOM.render(
+        <div>
+        <SupportApp/>
+        </div>,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

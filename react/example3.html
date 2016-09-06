@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+      Basic React
+        1. Component doesn't have state then component called dumb Component
+        2. Dumb component just render based on props
+        3. From React-15.0.0 dumb component can be written like function and function gets props as argument
+        4. HelloWorld is dumb component. HelloWorld1 is functional way of written
+        5. Dumb component gets props. It has some props based condition and display information.
+           It should cover those test cases
+
+      class HelloWorld extends React.Component{
+        render(){
+          return <h1>HelloWorld,{this.props.name}</h1>
+        }
+      }
+
+      var HelloWorld1 =({name})=>{
+          return <h1>HelloWorld1, {name}</h1>
+      }
+
+      ReactDOM.render(<div>
+        <HelloWorld name="vimal"/>
+        <HelloWorld1 name="vimalesan"/>
+        </div>,
+        document.getElementById('react')
+      );
+    </pre>
+
+    <script  type="text/babel">
+      class HelloWorld extends React.Component{
+        render(){
+          return <h1>HelloWorld,{this.props.name}</h1>
+        }
+      }
+      var HelloWorld1 =({name})=>{
+          return <h1>HelloWorld1, {name}</h1>
+      }
+      ReactDOM.render(<div>
+        <HelloWorld name="vimal"/>
+        <HelloWorld1 name="vimalesan"/>
+        </div>,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

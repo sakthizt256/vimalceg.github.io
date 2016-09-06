@@ -1,0 +1,222 @@
+<html>
+  <head>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+
+    </pre>
+    <script  type="text/babel">
+      var plugin3Obj={
+        init:()=>{
+          return {a:"url"}
+        },
+        render:({tickets},response)=>{
+          return <div>plugin3 {tickets[0].id} {response?response.a:""}</div>
+        },
+        event:{
+          "ticket_add,ticket_edit":()=>{
+
+          }
+        }
+      }
+      var plugin4Obj={
+        init:(props)=>{
+          return $.get("http://jsonplaceholder.typicode.com/posts")
+        },
+        render:({tickets},response)=>{
+          return <div>plugin4 {tickets[0].id}
+            <div>Response</div>
+            {response && response.map((res)=>{
+              return <div>{res.title}</div>
+            })}
+          </div>
+        }
+      }
+
+      function createPlugin(ob){
+        return class Plugin extends React.Component{
+          constructor(props){
+            super(props);
+            this.state={};
+          }
+          componentDidMount(){
+            var url=ob.init(this.props);
+            console.log(typeof url.then );
+            if(typeof url == "function"){
+              this.setState({response:url()})
+            }
+            else if(typeof url == "object" && typeof url.then == "function"){
+              url.then((response)=>{
+                this.setState({response})
+              });
+            }
+            else{
+              console.log("setTimeout");
+              setTimeout(()=>{
+                this.setState({response:url})
+              },1000);
+            }
+          }
+          render(){
+            var response=this.state.response;
+            return ob.render(this.props,response);
+          }
+        }
+      }
+      var Plugin3=createPlugin(plugin3Obj);
+      var Plugin4=createPlugin(plugin4Obj);
+
+      var Plugin2=({tickets})=>{
+        return <div>{tickets[0].id}</div>
+      };
+
+      class Plugin1 extends React.Component{
+
+        componentDidMount(){
+          this.props.bindEvent("ticket_add",()=>{
+            console.log("Plugin1-ticket_add");
+          })
+        }
+        render(){
+          return <div> {
+            this.props.tickets.map((ticket)=>{
+            return <div key={`ticket${ticket.id}`}> Ticket
+                <div>{ticket.id}</div>
+                <div>{ticket.subject}</div>
+                <div>------------------</div>
+              </div>
+          })
+        }
+          <input type="button" onClick={this.props.addTicket} value="Add Ticket from plugin"/>
+          </div>;
+        }
+      }
+
+      var addEventListener;
+      var removeEventListener;
+      class PluginHandler extends React.Component{
+        constructor(props){
+          super(props);
+          this.handlers={};
+          this.event=this.event.bind(this);
+          this.bindEvent=this.bindEvent.bind(this);
+          this.appRender=this.appRender.bind(this);
+        }
+        render(){
+
+            return <div>
+              {
+                this.props.apps.map((app)=>{
+                return <div key={`app-${app.appId}`} ref={app.appId}/>
+              })
+            }
+
+            </div>
+        }
+        event(type){
+          if(this.handlers[type]){
+            this.handlers[type].forEach((handler)=>{
+              handler();
+            })
+          }
+        }
+        bindEvent(type,fn){
+          if(!this.handlers[type]){
+            this.handlers[type]=[];
+          }
+          this.handlers[type].push(fn);
+        }
+        componentDidMount(){
+          addEventListener(this.event);
+          this.appRender();
+        }
+        componentDidUpdate(){
+          this.appRender();
+        }
+        appRender(){
+          this.props.apps.forEach((app)=>{
+            var AppName=app.appName;
+            ReactDOM.render(<AppName {...this.props.appProps} addTicket={this.props.addTicket} bindEvent={this.bindEvent}/>,ReactDOM.findDOMNode(this.refs[app.appId]))
+          })
+        }
+        componentWillUnmount(){
+          removeEventListener(this.event);
+          ReactDOM.unmountComponentAtNode(ReactDOM.findDOMNode(this.refs[this.props.appId]));
+        }
+      }
+      PluginHandler=ReactRedux.connect((state)=>({appProps:state}),{addTicket})(PluginHandler);
+      function addTicket(){
+        console.log("addticket")
+        return {
+          type:"ticket_add",
+          data:{
+            id:Math.random(10).toString().substring(2),
+            subject:`subject-${Math.random(36).toString().substring(2)}`
+          }
+        }
+      }
+      class App extends React.Component{
+        render(){
+          return <div>App
+            <div><input type="button" onClick={this.props.addTicket} value="Add Ticket from app"/></div><br/><br/>
+          PluginHandler
+          <PluginHandler apps={[
+            {appId:"1",appName:Plugin1},
+            {appId:"2",appName:Plugin2},
+            {appId:"3",appName:Plugin3},
+            {appId:"4",appName:Plugin4}
+          ]}  /></div>
+        }
+      }
+        App=ReactRedux.connect((state)=>({}),{addTicket})(App);
+      var tickets=(state={},action)=>{
+        switch (action.type) {
+          case "ticket_add":
+            return [...state,action.data];
+            break;
+          default:
+            return state;
+        }
+      }
+      var ticketObj=[{id:"1",subject:"ticket subject"}];
+
+      var eventSubscriber=()=>{
+        var listeners=[];
+        addEventListener=(fn)=>{
+          listeners.push(fn)
+        }
+        removeEventListener=(fn)=>{
+          listeners=listeners.filter((listener)=>(listener==fn));
+        }
+        return ({dispatch,getState})=>(next)=>(action)=>{
+        var res=next(action);
+        listeners.forEach((listener)=>{
+          listener(action.type);
+        })
+        return res;
+      }
+    };
+      var createStoreWithMiddleware=Redux.applyMiddleware(eventSubscriber([]))(Redux.createStore);
+      var reducers=Redux.combineReducers({tickets});
+      var store = createStoreWithMiddleware(reducers,{tickets:ticketObj});
+      var Provider = ReactRedux.Provider;
+      ReactDOM.render(
+        <Provider store={store}>
+          <App/>
+        </Provider>,
+        document.getElementById('react')
+      );
+      store.dispatch({type:"test"})
+    </script>
+  </body>
+</html>
