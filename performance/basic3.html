@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<style type="text/css">
+		.box{
+			height: 100px;
+			width: 100px;
+			
+		}
+		</style>
+	</head>
+	<body>
+	<div id="box1" class="box"></div>
+	<div id="b1" onClick="cal()">Click</div>
+
+	<script src="./jquery-1.8.3.min.js" type="text/javascript"></script>	
+	<script>
+		function cal(t){
+			setTimeout(function(){
+				var box1 = document.getElementById("box1");
+				//box1.style.backgroundColor="red";
+				//box1.style.height="200px";
+				//box1.style.width="200px";
+				//console.dir(box1.offsetWidth);
+				box1.innerHTML="<div id='d1' class='box'>testing</div>";
+			/*	var d1 = document.getElementById("d1");
+				console.dir(d1.offsetWidth);*/
+			},1000);
+		}
+		/*$(document).ready(function(){
+			$("#b1").click(function(){
+				setTimeout(function(){
+					$(".box").css("background","red");
+				},1000);
+			})
+		})*/
+	</script>
+	</body>
+</html>

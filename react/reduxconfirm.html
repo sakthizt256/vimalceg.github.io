@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux-thunk/2.1.0/redux-thunk.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+    <style>
+      .modal {
+      /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      padding-top: 100px; /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    .hide{
+      display: none;
+    }
+</style>
+  </head>
+  <body>
+    <div id="react"></div>
+
+    <script  type="text/babel">
+     var confirmBox = (state=false,action) => {
+      switch(action.type){
+        case 'ConfirmBox_Open':
+        return true;
+        case 'ConfirmBox_Hide':
+        return false;
+      }
+      return state;
+    }
+    var confirmBoxAction=(()=>{
+      var ob={resolve:null,reject:null};
+      function showConfirmBox(){
+        return (dispatch,getState)=>{
+            dispatch({type:"ConfirmBox_Open"});
+            return new Promise((res,rej)=>{
+              ob.resolve=()=>{
+                dispatch({type:"ConfirmBox_Hide"});
+                res();
+              }
+              ob.reject=()=>{
+                dispatch({type:"ConfirmBox_Hide"});
+                 rej();
+              }
+            })
+        }
+      }
+      return {
+        ob,
+        showConfirmBox
+      }
+    })()
+    class ConfirmBox extends React.Component{
+      render(){
+      
+        return <div className={this.props.confirmBox ? "modal":"hide"}>
+         
+          <div className="modal-content">
+            <div>Message : {this.props.msg}</div>
+            <button onClick={this.props.confirmBoxAction.resolve}>Ok</button>
+            <button onClick={this.props.confirmBoxAction.reject}>Cancel</button>
+          </div>
+        </div>
+      }
+    }
+    ConfirmBox = ReactRedux.connect((state)=>{
+      return{
+        confirmBox:state.confirmBox,
+        confirmBoxAction:confirmBoxAction.ob
+      }
+    }) 
+     (ConfirmBox)
+
+
+    class Page1 extends React.Component{
+      constructor(props){
+        super(props)
+        this.confirm=this.confirm.bind(this);
+      }
+      confirm(){
+        this.props.showConfirmBox().then(function(){
+          console.log("ok");
+        }).catch(function(){
+          console.log("cancel");
+        });
+      }
+      render(){
+        return <div>
+          Page1  
+          <div onClick={this.confirm}>Click</div>
+        </div>
+      }
+    }
+    Page1 = ReactRedux.connect((state)=>state,{showConfirmBox:confirmBoxAction.showConfirmBox})(Page1);
+
+    class App extends React.Component{
+      render(){
+        return <div>
+          {this.props.children}
+          <ConfirmBox msg="Message"/>
+        </div>
+      }
+    }
+    App = ReactRedux.connect((state)=>({state}))(App)
+     var logmiddleware=({dispatch,getState})=>(next)=>(action)=>{
+        console.log("PreState",getState());
+        console.log("action",action);
+        var a=next(action);
+        console.log("NextState",getState());
+        return a;
+
+      }
+    var reducers=Redux.combineReducers({confirmBox});
+    var createStoreWithMiddleware=Redux.applyMiddleware(ReduxThunk.default)(Redux.createStore)
+    var store = createStoreWithMiddleware(reducers);
+      ReactDOM.render(
+        <ReactRedux.Provider store={store}>
+          <App>
+           <Page1/>
+          </App>
+        </ReactRedux.Provider>
+        ,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

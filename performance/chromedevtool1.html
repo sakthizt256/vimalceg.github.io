@@ -1,0 +1,70 @@
+<html>
+	<head></head>
+	<body>
+		<div onClick="test1()">Simple function example</div>
+		<div onClick="test2()">Timeout example</div>
+		<div onClick="test3()">Single function with 3 time log function call</div> 
+		<div onClick="test4()">Single function with 3 time log function call alert break</div> 
+		<div onClick="test5()">Single function with 3 time custom function call</div> 
+		<div onClick="test6()">Single function with 3 time custom function call alert break</div> 
+		<div onClick="test7()">Single function with 3 time custom function call delay each time</div> 
+		<div onClick="test8()">Single function with 100 time custom function call</div> 
+		<script type="text/javascript">
+		var d=1;
+
+		function test1(){
+			console.log("test1");
+		}
+		function test2(){
+			setTimeout(function test1s(){
+				console.log("test1s");
+			},1);
+			setTimeout(function test2s(){
+				console.log("test2s");
+			},1);
+		}
+		function test3(){
+			console.log("test3");		
+			console.log("test3");
+			console.log("test3");
+		}
+		function test4(){
+			console.log("test4");
+			alert('sdfs');
+			console.log("test4");
+			alert('sdfs');
+			console.log("test4");
+		}
+		function test5(){
+			test1();
+			test1();
+			test1();
+		}
+		function test6(){
+			test1();
+			alert('sdfs');
+			test1();
+			alert('sdfs');
+			test1();
+		}
+		function test7(){
+			delay();
+		//	console.log("test");
+			delay();
+			delay();
+		}
+		function test8(){
+			var i=0;
+			for(i=0;i<1000;i++)
+			test1();
+		
+		}
+		
+		function delay(){
+			
+			for(i=0;i<d*10000000;i++);
+				d++;
+		}
+		</script>
+	</body>
+</html>

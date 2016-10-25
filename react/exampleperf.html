@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-with-addons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script  type="text/babel">
+    	class Test extends React.Component{
+    		constructor(props){
+    			super(props);
+    			this.state={count:0}
+    		}
+    		componentDidMount() {
+    			setTimeout(()=>{
+    				this.setState({count:3});
+    			},3000)
+    			setTimeout(()=>{
+    				this.setState({count:2});
+    			},2000)
+    			setTimeout(()=>{
+    				this.setState({count:1});
+    			},1000)
+    		}
+    		render(){
+    			var {person} =this.props;
+    			return <div>
+    				<div>{person.name}</div>
+					<div>{person.age}</div>
+					<div>{this.state.count}</div>
+				</div>
+    		}
+    	}
+    	React.addons.Perf.start();
+    	var person=[{name:"vimal",age:"27"},{name:"vimal1",age:"26"}]
+    	function render(i){
+	      ReactDOM.render(
+	      	<div>
+	        <Test person={person[i]}/>
+	        <Test person={person[i]}/>
+	        </div>,
+	        document.getElementById('react')
+	      );
+	  }
+	  render(0);
+      setTimeout(()=>{
+      	render(0);
+      	render(0);
+      	render(0);
+      	React.addons.Perf.stop();
+      	console.log(React.addons.Perf.getWasted());
+      },1000);
+      
+    </script>
+  </body>
+</html>
+

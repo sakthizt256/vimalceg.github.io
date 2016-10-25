@@ -1,0 +1,37 @@
+<html>
+	<head>
+		<style type="text/css">
+		.box{
+			height: 100px;
+			width: 100px;
+			background:black;
+		}
+		</style>
+	</head>
+	<body>
+	<div id="box1" class="box"></div>
+	<div id="b1" onClick="cal()">Click</div>
+
+	<script src="./jquery-1.8.3.min.js" type="text/javascript"></script>	
+	<script>
+		function cal(t){
+			//setTimeout(function(){
+				var box1 = document.getElementById("box1");
+				box1.style.backgroundColor="red";
+				var i;
+				for(i=0;i<100000;i++){
+					box1.style.backgroundColor="#"+i;
+				}
+				box1.style.backgroundColor="#"+1;
+			//},1000);
+		}
+		/*$(document).ready(function(){
+			$("#b1").click(function(){
+				setTimeout(function(){
+					$(".box").css("background","red");
+				},1000);
+			})
+		})*/
+	</script>
+	</body>
+</html>

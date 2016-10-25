@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<style type="text/css">
+		.box{
+			height: 100px;
+			width: 100px;
+			background:black;
+		}
+		</style>
+	</head>
+	<body>
+	<div>sdsdf
+		<div id="box1" class="box">
+			<span>test</span>
+			<body>test111</body>
+		</div>
+
+	</div>
+	<div onClick="cal()">IntervelStart</div>
+	<div id="b1" >Click</div>
+
+	<script src="./jquery-1.8.3.min.js" type="text/javascript"></script>	
+	<script>
+		function cal(t){
+			var aaa=setInterval(function(){
+				console.time("test");
+				var box1 = document.querySelector("span");
+				console.timeEnd("test")
+			},1000);
+		}
+		$(document).ready(function(){
+			$("#b1").click(function(){
+				$("#box1").append("<span>test</span");
+			})
+		})
+	</script>
+	</body>
+</html>

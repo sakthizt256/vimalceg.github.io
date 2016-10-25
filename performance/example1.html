@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<style type="text/css">
+		.red{
+			color:red;
+		}
+		.black{
+			color:black;
+		}
+		#inject{
+			height: 100px;
+    		overflow: scroll;
+		}
+		</style>
+	</head>
+	<body>
+	<div id="inject"></div>
+	
+	<button id="injectbtn">Inject</button>
+	<div id="b1">Click</div>
+
+	<script src="./jquery-1.8.3.min.js" type="text/javascript"></script>	
+	<script>
+		$(document).ready(function(){
+			$("#b1").mouseover(function test(){
+				
+				jQuery(this).css("color","red");
+			}).mouseout(function(){
+				jQuery(this).css("color","black");
+			})
+			/*$("#b1").click(function(){
+				console.time("click");
+				if($("#text").hasClass("red")){
+					$("#text").attr("class","black");
+				}else{
+					$("#text").attr("class","red");
+				}
+				console.timeEnd("click");
+			})
+			$("#injectbtn").click(function(){
+				var str="<div>";
+				for(i=0;i<100000;i++){
+					str+="<div>"+i;
+				}
+				str+="<div id='text' class='red'>Vimalesan</div>";
+				for(i=0;i<100000;i++){
+					str+="</div>";
+				}
+				
+				str+="</div>";
+				$("#inject").html(str);
+			})*/
+		})
+	</script>
+	</body>
+</html>
