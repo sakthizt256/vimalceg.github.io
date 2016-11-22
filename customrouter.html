@@ -1,0 +1,117 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script  type="text/babel">
+        window.ob={a:1}
+        function myHistory(){
+            var pushState=window.history.pushState;
+            var replaceState=window.history.replaceState;
+            var listeners=[];
+            function subscribe(fn){
+                listeners.push(fn)
+                return ()=>{
+                    listeners=listeners.filter((listener)=>listener!=fn);
+                }
+            }
+            window.history.pushState=function(state,title,url){
+                pushState.call(this,state,title,url);
+                listeners.map((listener)=>{
+                    listener();
+                });
+                
+            }
+            window.onpopstate = function () {
+                 listeners.map((listener)=>{
+                    listener();
+                });
+            }
+            return {
+                subscribe
+            }
+        }
+        
+        class Router extends React.Component{
+            constructor(props){
+                super(props);
+                this.historyChange=this.historyChange.bind(this);
+                this.state={
+                    currentURL:location.pathname 
+                }
+            }
+            historyChange(){
+                this.setState({currentURL:location.pathname});
+            }
+            componentWillUnmount(){
+                this.unsubscribe();
+            }
+            componentDidMount(){
+                this.unsubscribe=history.subscribe(this.historyChange);
+            }
+            render(){
+                return <div>{
+                React.Children.map(this.props.children,(child)=>{
+                    var paths=child.props.path.split("\/");
+                    console.log("path",child.props.path==this.state.currentURL);
+                    if(child.props.path==this.state.currentURL)
+                    return child;
+                    return null;
+                })
+                }</div>
+            }
+        }
+        class Route extends React.Component{
+            render(){
+                var {component:Component} = this.props;
+                return <Component/>
+            }
+        }
+       
+      class Link extends React.Component{
+        constructor(props){
+            super(props);
+            this.onClick=this.onClick.bind(this);
+        }
+        onClick(){
+            console.log("test");
+            window.history.pushState(ob,"title",this.props.href|| "./test")
+        }
+        render(){
+            var {children} =this.props;
+            return <div onClick={this.onClick}>{children}</div>
+        }
+      } 
+       class App extends React.Component{
+            render(){
+                return <div>
+                    <Link href="./test1">Test1</Link>
+                        <Link href="./test2">Test2</Link>
+                </div>
+            }
+        }
+        class Page1 extends React.Component{
+            render(){
+                return <div>
+                    Page1
+                </div>
+            }
+        }
+      var history=myHistory();
+      ReactDOM.render(
+        <Router history={history}>
+            <Route path="/customrouter.html" component={App}/>
+            <Route path="/test1" component={Page1}/>
+        </Router>,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

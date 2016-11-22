@@ -1,0 +1,25 @@
+<html>
+	<head></head>
+	<body>
+		<pre>
+			createBrowserHistory - html5
+			createMemoryHistory - non-dom native app
+			createHashHistory - legacy browser
+		</pre>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/history/4.4.0/history.min.js"></script>
+		<script>
+			const history = History.createBrowserHistory()
+			console.log(history)
+			const location1 = history.location
+			console.log(location1);
+			const unlisten = history.listen((location, action) => {
+			  console.log(action, location.pathname, location.state)
+			})
+
+			history.push('/home', { some: 'state' })
+		//	unlisten()
+		</script>
+
+	</body>
+
+</html>

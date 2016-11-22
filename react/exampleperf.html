@@ -17,7 +17,7 @@
     			this.state={count:0}
     		}
     		componentDidMount() {
-    			setTimeout(()=>{
+    		/*	setTimeout(()=>{
     				this.setState({count:3});
     			},3000)
     			setTimeout(()=>{
@@ -25,9 +25,10 @@
     			},2000)
     			setTimeout(()=>{
     				this.setState({count:1});
-    			},1000)
+    			},1000)*/
     		}
     		render(){
+          console.log("render");
     			var {person} =this.props;
     			return <div>
     				<div>{person.name}</div>
@@ -42,19 +43,24 @@
 	      ReactDOM.render(
 	      	<div>
 	        <Test person={person[i]}/>
-	        <Test person={person[i]}/>
+	        {/*<Test person={person[i]}/>*/}
 	        </div>,
 	        document.getElementById('react')
 	      );
 	  }
 	  render(0);
-      setTimeout(()=>{
+     React.addons.Perf.printInclusive();
+        render(0);
+      React.addons.Perf.printInclusive();
+      React.addons.Perf.stop();
+     /* setTimeout(()=>{
+          React.addons.Perf.start();
       	render(0);
       	render(0);
       	render(0);
       	React.addons.Perf.stop();
-      	console.log(React.addons.Perf.getWasted());
-      },1000);
+      	React.addons.Perf.printInclusive();
+      },1000);*/
       
     </script>
   </body>

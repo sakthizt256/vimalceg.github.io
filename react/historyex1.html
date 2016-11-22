@@ -1,0 +1,25 @@
+<html>
+	<head>
+		<script src="https://unpkg.com/history/umd/history.js"></script>
+	</head>
+	<body>
+		<script>
+			const history = History.createHashHistory()
+
+			// Get the current location.
+			var location = history.location
+
+			// Listen for changes to the current location.
+			var unlisten = history.listen((location, action) => {
+			  // location is an object like window.location
+			  console.log(action, location.pathname, location.state)
+			})
+
+			// Use push, replace, and go to navigate around.
+			//history.push('/historyex2.html', { some: 'state' })
+
+			// To stop listening, call the function returned from listen().
+			unlisten()
+		</script>
+	</body>
+</html>

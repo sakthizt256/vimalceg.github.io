@@ -1,0 +1,126 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-with-addons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reselect/2.5.4/reselect.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+  
+    <script  type="text/babel">
+    	var ticketsSel=(state)=>state.tickets;
+			var ticketIdsSel=(state)=>state.ticketIds;
+			var ticketSelector=Reselect.createSelector(ticketsSel,ticketIdsSel,(ticketsObj,ids)=>{
+				return ids.map((ticketId)=>{
+    				return ticketsObj[ticketId];
+    			})
+			})
+    	var ob={};
+    	var ids=[];
+    	var i;
+    	for(i=0;i<500;i++){
+    		ob[i]={
+    			id:i,
+    			subject:"ticket"+i,
+    			cmdCount:Math.round(Math.random()*100)
+    		}
+    		ids.push(i);
+    	}
+    	var tickets=(state={},action)=>state;
+    	var ticketIds=(state=[],action)=>state;
+    	var hook=(state=[],action)=>Object.assign({},state);
+    	var reducers = Redux.combineReducers({tickets,ticketIds,hook});
+
+    	var logmiddleware=({dispatch,getState})=>(next)=>(action)=>{
+	        console.log("PreState",getState());
+	        console.log("action",action);
+	        console.log("Perf start");
+	        React.addons.Perf.start()
+	        var a=next(action);
+			React.addons.Perf.stop();
+			React.addons.Perf.printInclusive();
+	        console.log("NextState",getState());
+	        return a;	
+      	}
+      var createStoreWithMiddleware=Redux.applyMiddleware(logmiddleware)(Redux.createStore)
+
+    	var store=createStoreWithMiddleware(reducers,{tickets:ob,ticketIds:ids})
+    	class Ticket extends React.Component{
+    		/*shouldComponentUpdate(nextProps, nextState) {
+    			console.log(this.props.ticket!=nextProps.ticket)
+    			return this.props.ticket!=nextProps.ticket;
+    		}*/
+    		render(){
+    			const {ticket}=this.props;
+    			//const ticket=this.props;
+    			return <div style={{border:"1px solid",margin:"5px"}}>
+    								<div>{ticket.id}</div>
+    								<div>{ticket.subject}</div>
+    								<div>{ticket.cmdCount}</div>
+    							</div>
+    			}
+    	}
+    	/*var Ticket=(ticket)=>{
+    		return <div style={{border:"1px solid",margin:"5px"}}>
+    								<div>{ticket.id}</div>
+    								<div>{ticket.subject}</div>
+    								<div>{ticket.cmdCount}</div>
+    							</div>
+    			
+    	}*/
+    	class TicketList extends React.Component{
+    		/*shouldComponentUpdate(nextProps, nextState) {
+    			console.log(this.props.tickets!=nextProps.tickets)
+    			return this.props.ticket!=nextProps.ticket;
+    		}*/
+    		render(){
+    			const {tickets} = this.props;
+    			return (
+    					<div>
+    						{
+    							tickets.map((ticket)=>{
+    								return <Ticket ticket={ticket}/*{...ticket}*/  key={"ticket"+ticket.id}/>
+    							})
+    						}
+    					</div>
+    				)
+    		}
+    	}
+    	
+    	TicketList = ReactRedux.connect((state,props)=>{
+  /*  		console.time("map")
+    		var a=state.ticketIds.map((ticketId)=>{
+    				return state.tickets[ticketId];
+    		})
+    		console.timeEnd("map")
+    		return {
+    			tickets:a
+    		}
+*/
+			console.time("reselect")
+			var a=ticketSelector(state,props);
+			console.timeEnd("reselect")
+			return {tickets:a}
+    	})(TicketList)
+    	var ci=setInterval(()=>{
+    		store.dispatch({type:"hook"});
+    	},500);
+    	setTimeout(()=>{
+    		clearInterval(ci);
+    	},3000);
+      ReactDOM.render(
+      	<ReactRedux.Provider store={store}>
+        	<TicketList/>
+        </ReactRedux.Provider>
+        ,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>
+

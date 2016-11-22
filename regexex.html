@@ -1,0 +1,12 @@
+<html>
+	<body>
+		<script>
+			var str="/ticeket/sf/:ticket";
+			var regex=/ticket\/([a-z]*)\//g;
+
+			while(match=regex.exec(str)){
+				console.log(match);
+			}
+		</script>
+	</body>
+</html>

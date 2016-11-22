@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script  type="text/babel">
+     class Contact extends React.Component{
+      render(){
+        const {contact}=this.props;
+        console.log("render called ");
+        return <div>{contact.id}-{contact.name}</div>
+      }
+     }
+   /*  var Contact=({contact})=>{
+      console.log("render called ");
+      return <div>{contact.id}-{contact.name}</div>
+     }
+     class Contact extends React.Component{
+      shouldComponentUpdate(nextProps, nextState) {
+        console.log("shouldComponentUpdate",this.props!=nextProps)
+        return this.props!=nextProps
+        console.log("shouldComponentUpdate",this.props.contact!=nextProps.contact)
+        return this.props.contact!=nextProps.contact
+      }
+      render(){
+        const {contact}=this.props;
+        console.log("render called ");
+        return <div>{contact.id}-{contact.name}</div>
+      }
+     }*/
+     var contact={id:"1",name:"vimal"}
+     ReactDOM.render(<Contact contact={contact}/>,react);
+     ReactDOM.render(<Contact contact={contact}/>,react);
+     
+    </script>
+  </body>
+</html>
