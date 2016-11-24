@@ -1,0 +1,39 @@
+<html>
+	<body>
+		<div>
+			<div id="count"></div>
+			<div id="list"></div>
+		</div>
+		<script>
+			function setCount(count){
+				var countDom = document.getElementById("count");
+				countDom.innerText=count;
+			}
+			function updateList(ticketList){
+				var listDom = document.getElementById("list");
+				var str="";
+				for(i=0;i<ticketList.length;i++){
+					ticket=ticketList[i];
+					str+="<div>"+ticket.id+"</div><div>"+ticket.subject+"</div>";
+				}
+				listDom.innerText=str;
+			}
+			function getNewList(){
+				var tickets= [];
+				for(i=0;i<100;i++){
+					tickets.push({
+						id:1,
+						subject:Math.random(36).toString()
+					})
+				}
+			}
+			ci=setInterval(function(){
+				var ticketList=getNewList();
+				setCount(ticketList.length);
+				updateList(ticketList);
+			},10
+			)
+			setTimeout(function(){clearInterval(ci);},3000);
+		</script>
+	</body>
+</html>

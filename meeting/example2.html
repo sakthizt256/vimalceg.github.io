@@ -1,0 +1,33 @@
+<html>
+	<body>
+
+	<div id="container">
+		
+	</div>
+	 <script type="application/javascript">
+	 	function updateList(ticketList){
+			var listDom = document.getElementById("container");
+			var str="";
+			for(i=0;i<ticketList.length;i++){
+				ticket=ticketList[i];
+				str+="<div>"+ticket.id+"</div><div>"+ticket.subject+"</div>";
+			}
+			listDom.innerText=str;
+		}
+	 	
+		function loadJS(file) {
+		    // DOM: Create the script element
+		    var jsElm = document.createElement("script");
+		    // set the type attribute
+		    jsElm.type = "application/javascript";
+		    // make the script element load file
+		    jsElm.src = file;
+		    // finally insert the element to the body element in order to load the script
+		    document.body.appendChild(jsElm);
+		}
+		</script>
+	<button onclick="loadJS('https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js');loadJS('https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js');">Load library</button>
+	<button onClick="test()">Text</button>
+
+	</body>
+</html>

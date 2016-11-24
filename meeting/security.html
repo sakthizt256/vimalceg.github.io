@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script type="text/babel">
+      class HelloMessage extends React.Component {
+        render() {
+          return <div>{this.props.children}</div>
+        }
+      }
+      var str='<script>';
+      var str1='alert("test")<';
+      var str2='/script>';
+      setTimeout(function(){
+        ReactDOM.render(<HelloMessage>{str+str1+str2}</HelloMessage>, react);
+      },1000)
+      
+    </script>
+
+
+
+    <script  type="text/babel">
+      class HelloMessage extends React.Component {
+        render() {
+          return <div>
+          {/*
+          test{this.props.a+this.props.b+this.props.c+this.props.d+this.props.e+this.props.f}
+        */}
+          <a href={this.props.href}>test</a>
+
+          </div>
+        }   
+      } 
+
+   // ReactDOM.render(<HelloMessage a="<" b="script>" c="test" d="<" e="/script>" href="javascript:alert('a')" />, react);
+    </script>
+  </body>
+</html>
+
+ 

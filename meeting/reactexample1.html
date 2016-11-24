@@ -1,0 +1,61 @@
+<html>
+	<body>
+		<div id="react">
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+		<script type="text/babel">
+		class Count extends React.Component{
+			render(){
+				return <div>{this.props.count}</div>
+			}
+		}
+		class TicketListItem extends React.Component{
+			render(){
+				<div>
+					<div>{this.props.id}</div>
+					<div>{this.props.subject}</div>
+				</div>
+			}
+		}
+		class TicketList extends React.Component{
+			render(){
+				const {tickets}=this.props.ticket;
+				return <div>
+				{
+					tickets.map((ticket)=>{
+						return <TicketListItem id={ticket.id} subject={ticket.subject}/>
+					});
+				}
+				</div>
+			}
+		}
+		ReactDOM.render();
+			
+			function setCount(count){
+				var countDom = document.getElementById("count");
+				countDom.innerText=count;
+			}
+			function updateList(ticketList){
+				var listDom = document.getElementById("list");
+				var str="";
+				for(i=0;i<ticketList.length;i++){
+					ticket=ticketList[i];
+					str+="<div>"+ticket.id+"</div><div>"+ticket.subject+"</div>";
+				}
+				listDom.innerText=str;
+			}
+			function getNewList(){
+				return [{id:1,subject:Math.random(36).toString()},{id:2,subject:Math.random(36).toString()}]
+			}
+			ci=setInterval(function(){
+				var ticketList=getNewList();
+				setCount(ticketList.length);
+				updateList(ticketList);
+			},10
+			)
+			setTimeout(function(){clearInterval(ci);},3000);
+		</script>
+	</body>
+</html>
