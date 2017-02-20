@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="../js/redux.js"></script>
+    <script src="../js/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <pre>
+        Topdown problem
+    </pre>
+    <script  type="text/babel">
+    var dummyAction = (type) => ({type:type})
+    class Child extends React.Component{
+        render(){
+          console.log("Child - render")
+          return <div>Child - {this.props.childNumber}
+              <br />Parent number is  - {this.props.parentNumber}
+            <div onClick={()=>{
+                setTimeout(()=>{ this.props.dummyAction("CHILD_INC")},1);
+                //this.props.dispatch({type:"INC"})
+              }
+              }>Inc</div>
+          </div>
+        }
+        componentDidMount(){
+          console.log("Child - componentDidMount");
+        }
+      }
+      Child = ReactRedux.connect((state,props)=>{
+        return {
+          childNumber:state.childNumber,
+          parentNumberIs:state.parentNumber
+
+        }
+      },{dummyAction})(Child)
+
+      class Root extends React.Component{
+        render(){
+          console.log("Root - render")
+          return <div>Root -{this.props.parentNumber}
+             
+              <div onClick={()=>{
+                setTimeout(()=>{ this.props.dummyAction("PAR_INC")},1);
+                //this.props.dispatch({type:"INC"})
+              }
+              }>Inc</div>
+              <Child parentNumber={this.props.parentNumber}/>
+          </div>
+        }
+        componentDidMount(){
+          console.log("Root - componentDidMount");
+        }
+      }
+      Root = ReactRedux.connect((state,props)=>{
+        return {
+          parentNumber:state.parentNumber
+        }
+      },{dummyAction})(Root)
+      
+      var reducer = Redux.combineReducers({
+        parentNumber:(state=0,action)=>{
+          console.log(action)
+          if(action.type=="PAR_INC"){
+            return state+1;
+          }
+          return state;
+        },
+        childNumber:(state=0,action)=>{
+          if(action.type=="CHILD_INC")
+            return state+1
+          return state;
+        }
+      })
+      var store = Redux.createStore(reducer);
+      ReactDOM.render(
+        <ReactRedux.Provider store={store}>
+          <Root>
+           
+          </Root>
+          </ReactRedux.Provider>
+        ,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

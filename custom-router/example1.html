@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/history/4.5.1/history.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script  type="text/babel">
+        const history = History.createHashHistory({
+          basename:'vimal',
+          //getUserConfirmation:(message, callback) => callback(window.confirm("vimal"+message))
+        });//hash, browser history, memory hisoty
+
+            // Get the current location.
+            //var location = history.location
+
+            // Listen for changes to the current location.
+            var unlisten = history.listen((location, action) => {
+              // location is an object like window.location
+              console.log(action, location.pathname, location.state)
+            })
+            var unblock=history.block('Are you sure you want to leave this page?')
+            // unblock();
+            
+            // Use push, replace, and go to navigate around.
+            history.push('/historyex2.html', { some: 'state' })
+
+            // To stop listening, call the function returned from listen().
+            unlisten()
+    </script>
+  </body>
+</html>

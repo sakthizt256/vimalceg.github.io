@@ -13,10 +13,14 @@
 			const location1 = history.location
 			console.log(location1);
 			const unlisten = history.listen((location, action) => {
-			  console.log(action, location.pathname, location.state)
+			  console.log(action, location.pathname, location)
 			})
 
 			history.push('/home', { some: 'state' })
+            setTimeout(function(){
+                //history.replace('/home1', { some: 'state' })
+                history.goBack();
+            },2000);
 		//	unlisten()
 		</script>
 

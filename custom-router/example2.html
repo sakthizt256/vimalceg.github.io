@@ -1,0 +1,358 @@
+<html>
+  <head>
+    <script src="../js/react.js"></script>
+    <script src="../js/react-dom.js"></script>
+    <script src="../js/redux.js"></script>
+    <script src="../js/react-redux.js"></script>
+    <script type="text/javascript" src="../js/history.min.js"></script>
+    <script src="../js/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script  type="text/babel">
+    function formatPattern(pattern, params) {
+        params = params || {}
+        const { tokens } = compilePattern(pattern)
+        let parenCount = 0, pathname = '', splatIndex = 0, parenHistory = []
+        let token, paramName, paramValue
+        for (let i = 0, len = tokens.length; i < len; ++i) {
+            token = tokens[i]
+            if (token === '*' || token === '**') {
+                paramValue = Array.isArray(params.splat) ? params.splat[splatIndex++] : params.splat
+                  invariant(
+                    paramValue != null || parenCount > 0,
+                    'Missing splat #%s for path "%s"',
+                    splatIndex, pattern
+                  )
+            if (paramValue != null)
+                pathname += encodeURI(paramValue)
+            } else if (token === '(') {
+                parenHistory[parenCount] = ''
+                parenCount += 1
+            } else if (token === ')') {
+                const parenText = parenHistory.pop()
+                parenCount -= 1
+                if (parenCount)
+                    parenHistory[parenCount - 1] += parenText
+                else
+                    pathname += parenText
+            } else if (token.charAt(0) === ':') {
+                paramName = token.substring(1)
+                paramValue = params[paramName]
+                  invariant(
+                    paramValue != null || parenCount > 0,
+                    'Missing "%s" parameter for path "%s"',
+                    paramName, pattern
+                  )
+            if (paramValue == null) {
+                if (parenCount) {
+                    parenHistory[parenCount - 1] = ''
+                  const curTokenIdx = tokens.indexOf(token)
+                  const tokensSubset = tokens.slice(curTokenIdx, tokens.length)
+                  let nextParenIdx = -1
+
+                  for (let i = 0; i < tokensSubset.length; i++) {
+                    if (tokensSubset[i] == ')') {
+                      nextParenIdx = i
+                      break
+                    }
+                  }
+
+          invariant(
+            nextParenIdx > 0,
+            'Path "%s" is missing end paren at segment "%s"', pattern, tokensSubset.join('')
+          )
+
+          // jump to ending paren
+          i = curTokenIdx + nextParenIdx - 1
+        }
+      }
+      else if (parenCount)
+        parenHistory[parenCount - 1] += encodeURIComponent(paramValue)
+      else
+        pathname += encodeURIComponent(paramValue)
+
+    } else {
+      if (parenCount)
+        parenHistory[parenCount - 1] += token
+      else
+        pathname += token
+    }
+  }
+
+  invariant(
+    parenCount <= 0,
+    'Path "%s" is missing end paren', pattern
+  )
+
+  return pathname.replace(/\/+/g, '/')
+}
+function getParams(pattern, pathname) {
+  const match = matchPattern(pattern, pathname)
+  if (!match) {
+    return null
+  }
+
+  const { paramNames, paramValues } = match
+  const params = {}
+
+  paramNames.forEach((paramName, index) => {
+    params[paramName] = paramValues[index]
+  })
+
+  return params
+}
+function getParamNames(pattern) {
+  return compilePattern(pattern).paramNames
+}
+function matchPattern(pattern, pathname) {
+  // Ensure pattern starts with leading slash for consistency with pathname.
+  if (pattern.charAt(0) !== '/') {
+    pattern = `/${pattern}`
+  }
+  let { regexpSource, paramNames, tokens } = compilePattern(pattern)
+  
+  if (pattern.charAt(pattern.length - 1) !== '/') {
+    regexpSource += '/?' // Allow optional path separator at end.
+  }
+
+  // Special-case patterns like '*' for catch-all routes.
+  if (tokens[tokens.length - 1] === '*') {
+    regexpSource += '$'
+  }
+  
+  const match = pathname.match(new RegExp(`^${regexpSource}`, 'i'))
+  if (match == null) {
+    return null
+  }
+
+  const matchedPath = match[0]
+  let remainingPathname = pathname.substr(matchedPath.length)
+
+  if (remainingPathname) {
+    // Require that the match ends at a path separator, if we didn't match
+    // the full path, so any remaining pathname is a new path segment.
+    if (matchedPath.charAt(matchedPath.length - 1) !== '/') {
+      return null
+    }
+
+    // If there is a remaining pathname, treat the path separator as part of
+    // the remaining pathname for properly continuing the match.
+    remainingPathname = `/${remainingPathname}`
+  }
+    var paramMap={};
+    match.slice(1).forEach((v,i) => paramMap[paramNames[i]] = v && decodeURIComponent(v))
+  return {
+    remainingPathname,
+    paramMap
+  }
+}
+
+function compilePattern(pattern) {
+  if (!CompiledPatternsCache[pattern])
+    CompiledPatternsCache[pattern] = _compilePattern(pattern)
+
+  return CompiledPatternsCache[pattern]
+}
+const CompiledPatternsCache = Object.create(null)
+function _compilePattern(pattern) {
+  let regexpSource = ''
+  const paramNames = []
+  const tokens = []
+
+  let match, lastIndex = 0, matcher = /:([a-zA-Z_$][a-zA-Z0-9_$]*)|\*\*|\*|\(|\)/g
+  while ((match = matcher.exec(pattern))) {
+    if (match.index !== lastIndex) {
+      tokens.push(pattern.slice(lastIndex, match.index))
+      regexpSource += escapeRegExp(pattern.slice(lastIndex, match.index))
+    }
+
+    if (match[1]) {
+      regexpSource += '([^/]+)'
+      paramNames.push(match[1])
+    } else if (match[0] === '**') {
+      regexpSource += '(.*)'
+      paramNames.push('splat')
+    } else if (match[0] === '*') {
+      regexpSource += '(.*?)'
+      paramNames.push('splat')
+    } else if (match[0] === '(') {
+      regexpSource += '(?:'
+    } else if (match[0] === ')') {
+      regexpSource += ')?'
+    }
+
+    tokens.push(match[0])
+
+    lastIndex = matcher.lastIndex
+  }
+
+  if (lastIndex !== pattern.length) {
+    tokens.push(pattern.slice(lastIndex, pattern.length))
+    regexpSource += escapeRegExp(pattern.slice(lastIndex, pattern.length))
+  }
+
+  return {
+    pattern,
+    regexpSource,
+    paramNames,
+    tokens
+  }
+}
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+
+
+       
+        /*
+            var unblock=history.block('Are you sure you want to leave this page?')
+         unblock();
+        */    
+           
+
+            
+            
+            
+            /* parent is completely different url not handled
+      if u want put key like parent name change parent aslo match like logic
+            */
+            var urls=[
+                {
+                  pattern:"/zd",
+                  name:"root",
+                },{
+                  pattern:"/zd/:module",
+                  name:"ticketList"
+                },
+                {
+                  pattern:"/zd/:module/:ticketId",
+                  name:"ticketDetails"
+                }
+            ];
+            const MATCH=1;
+            const EXACT_MATCH=2;
+            const NOT_MATCH=0;
+
+            var getRoutingObj=(location,urls)=>{
+                var paramInfo=null;
+                return {
+                  urls:urls.map((url)=>{
+                    var obj=matchPattern(url.pattern,location.pathname);
+                    
+                    if(obj){
+                      paramInfo=obj
+                      if(obj.remainingPathname == ""){
+                        return Object.assign({},url,{match:EXACT_MATCH})
+                      }
+                      else{
+                        return Object.assign({},url,{match:MATCH})
+                      }
+                    }else{
+                      return Object.assign({},url,{match:NOT_MATCH})
+                    }
+                }),
+                  paramInfo
+                }
+            }
+             const history = History.createHashHistory({
+                  //basename:'zd'
+              });
+              var logmiddleware=(store)=>(next)=>(action)=>{
+                console.group("log")
+                console.log("PreState",store.getState());
+                console.log("action",action);
+                var a=next(action);
+                console.log("NextState",store.getState());
+                console.groupEnd("log")
+                return a;
+
+            }
+            var historyMiddleWare=(history) => (store)=>{
+              var unlisten = history.listen((location, action) => {
+                  store.dispatch({
+                    type:"URL_CHANGE",
+                    from:"history",data:{location,action,parse:getRoutingObj(location,urls)}
+                  })
+              })
+              return (next)=>(action)=>{
+                if(action.type=="URL_CHANGE" && action.from=="history"){
+                  return next(Object.assign(action,{from:null}))
+                }
+                else{
+                  history["push"](...action.data.location)
+                }
+              }
+            }
+            var routing = (state={},action)=>{
+                if(action.type=="URL_CHANGE"){
+                  return action.data
+                }
+                return state;
+            }
+            
+            var initialState={
+                routing:{}
+            }
+            var store = Redux.createStore(Redux.combineReducers({routing}),initialState);
+            
+            var reducers = Redux.combineReducers({routing});
+            var middleWare = Redux.applyMiddleware(historyMiddleWare(history),logmiddleware)
+            var store = Redux.createStore(reducers,{},middleWare)
+            
+            history.push({
+              pathname: '/zd/vimal',
+              search: '?the=query',
+              state: { some: 'state' }
+            })
+            history.push({
+              pathname: '/zd/vimal/1',
+              state: { some: 'state' }
+            })
+
+            class Link extends React.Component{
+              constructor(props){
+                super(props);
+                this.onClick = this.onClick.bind(this);
+              }
+              onClick(){
+                  
+
+              }
+              render(){
+                const paramMap = this.props.routing.parse.paramInfo.paramMap;
+                var url=urls.filter((url)=>url.name==this.props.name)[0];
+                var tokens=compilePattern(url.pattern).tokens;
+                var href=tokens.reduce((result,next)=>{
+                  if(!next.startsWith(":"))
+                  result+=next;
+                  else{
+                    var key=next.substring(1);
+                    
+                    result+=this.props.params[key] || paramMap[key];
+                  }
+                  return result;
+                },"")
+              console.log("link",href);
+                return <a href={href} >{this.props.children}</a>
+              }
+            }
+            Link=ReactRedux.connect((state)=>{
+              return {routing:state.routing}
+            })(Link)
+            class App extends React.Component{
+              render(){
+                return <ReactRedux.Provider store={store}>
+                <div>
+                  <Link name="ticketList" params={{ticketId:"2"}} query={{}} state={{}}>Link1</Link><br/>
+                  <Link name="ticketDetails" params={{ticketId:"1"}} query={{}} state={{}}>Link2</Link>
+                  </div>
+                </ReactRedux.Provider> 
+              }
+            }
+            ReactDOM.render(<App/>,react);
+            
+    </script>
+  </body>
+</html>

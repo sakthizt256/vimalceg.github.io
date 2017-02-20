@@ -329,6 +329,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _inherits(Connect, _Component);
 
 	      Connect.prototype.shouldComponentUpdate = function shouldComponentUpdate() {
+	      	console.log("Connect shouldComponentUpdate - "+WrappedComponent.name) 
 	        return !pure || this.haveOwnPropsChanged || this.hasStoreStateChanged;
 	      };
 
@@ -460,6 +461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 
 	      Connect.prototype.componentDidMount = function componentDidMount() {
+	      	console.log("Connect componentDidMount - "+WrappedComponent.name) 
 	        this.trySubscribe();
 	      };
 
@@ -488,6 +490,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 
 	      Connect.prototype.handleChange = function handleChange() {
+	      	console.log("Connect handleChange - "+WrappedComponent.name) 
 	        if (!this.unsubscribe) {
 	          return;
 	        }

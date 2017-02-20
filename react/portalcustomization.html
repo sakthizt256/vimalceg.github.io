@@ -10,40 +10,28 @@
   </head>
   <body>
     <div id="react"></div>
-    <script type="text/babel">
-      class HelloMessage extends React.Component {
-        render() {
-          return <div>{this.props.children}</div>
+   
+    <script type="text/javascript">
+      window.Header = React.createClass({
+        render(){
+          var test="vimal";
+          return React.createElement("div", null, "Header"+test);
         }
-      }
-      var str='<script>';
-      var str1='alert("test")<';
-      var str2='/script>';
-      setTimeout(function(){
-        ReactDOM.render(<HelloMessage>{str+str1+str2}</HelloMessage>, react);
-        
-      },1000)
-      
+      })
     </script>
-
-
-
     <script  type="text/babel">
-      class HelloMessage extends React.Component {
-        render() {
-          return <div>
-          {/*
-          test{this.props.a+this.props.b+this.props.c+this.props.d+this.props.e+this.props.f}
-        */}
-          <a href={this.props.href}>test</a>
+      var test="test";
+      var CustomHeader = "({test})=><div>${test}</div>";
+       class Header1 extends React.Component{
+        render(){
+          return <div>Header</div>
+        }
+       } 
 
-          </div>
-        }   
-      } 
-
-   // ReactDOM.render(<HelloMessage a="<" b="script>" c="test" d="<" e="/script>" href="javascript:alert('a')" />, react);
+      ReactDOM.render(
+       <Header/>,
+        document.getElementById('react')
+      );
     </script>
   </body>
 </html>
-
- 

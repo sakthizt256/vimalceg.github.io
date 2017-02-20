@@ -1,0 +1,188 @@
+<html>
+  <head>
+    <script src="../../js/react.js"></script>
+    <script src="../../js/react-dom.js"></script>
+    <script src="../../js/browser.min.js"></script>
+  </head>
+  <body>
+      <div id="ex1"></div>
+      <div id="ex2"></div>
+      <div id="ex3"></div>
+      <div id="ex4"></div>
+      <div id="ex5"></div>
+      <div id="ex6"></div>
+    <script  type="text/babel">
+        /**
+        1. Transformation
+        data into a different form of data 
+        */
+        var NameBox=({name}) =>{
+          console.log("namebox")
+          return <span style={{fontWeight:'bold'}}>{name}</span>
+      }
+      ReactDOM.render(<NameBox name="Vimal"/>,ex1)
+      
+      
+      /**
+        2. Abstraction
+            Complex UI can't fit in single function
+            reusable pieces 
+            don't leak their implementation
+        */
+        var FancyUserBox=({user}) =>{
+          return (
+          <span style={{border:'1px solid blue'}}>
+            <NameBox name={user.firstName+' '+user.lastName}/>
+            </span>
+            )
+      }
+
+
+
+      ReactDOM.render(<FancyUserBox user={{firstName:"Vimal",lastName:"esan"}}/>,ex2)
+      
+      
+      /**
+        3. Composition
+            
+        */
+        var FancyBox=({children}) =>{
+          return (
+          <span style={{border:'1px solid blue'}}>
+            {children}
+            </span>
+            )
+      }
+        var UserBox = ({user})=>{
+            return (
+                <FancyBox>
+                    <NameBox name={user.firstName+' '+user.lastName}/>
+                </FancyBox>
+            )
+        }
+
+
+        
+      ReactDOM.render(<UserBox user={{firstName:"Vimal",lastName:"esan"}}/>,ex3)
+      
+      /**
+        4. State
+            scroll position,
+            typing input field
+            data model to be immutable
+        */
+        var LikeBox=({likes})=>{
+            return <span>{likes}</span>
+        }
+        var LikeButton=({onClick})=>{
+            return <button onClick={onClick}>Like</button>
+        }
+        var FancyNameBox=({user,likes,onClick}) =>{
+          return (
+            <FancyBox>
+                <NameBox name={user.firstName+' '+user.lastName}/>
+                <LikeBox likes={likes}/>
+                <LikeButton onClick={onClick}/>
+            </FancyBox>
+            )
+        }
+        /* side effect */
+        var likes=0;
+        function addOneMoreLike(){
+            likes++;
+            rerender();
+        }
+        /* side effect */
+        var rerender=()=>{
+            ReactDOM.render( /*side effect ReactDOM.render()*/
+              <FancyNameBox user={{firstName:"vimal",lastName:"esan"}} likes={likes} onClick={addOneMoreLike}/>,ex4
+              )
+        }
+        rerender();
+
+
+
+        /**
+        5. Memorization
+        */
+        var memorize = (fn)=>{
+          var cachedArg;
+          var cachedResult;
+          return (arg)=>{
+            
+            if(cachedArg==arg){
+              console.log("cached")
+              return cachedResult;
+            }
+            else{
+              cachedArg =  arg;
+              cachedResult = fn(arg);
+              return cachedResult;
+            }
+          }
+        }
+        var NameBox1=(name) =>{
+          console.log("render")
+          return <NameBox name={name} />
+        }
+        var MemorizedNameBox = memorize(NameBox1);
+
+        var NameAndAgeBox=({user,currentTime}) =>{
+
+          return (
+            <FancyBox>
+                {MemorizedNameBox(user.firstName+' '+user.lastName)}
+                {currentTime}
+            </FancyBox>
+            )
+        }
+        /* side effect */
+        setInterval(()=>{
+          ReactDOM.render( /*side effect ReactDOM.render()*/
+          <NameAndAgeBox user={{firstName:"vimal",lastName:"esan"}} currentTime={Date()}/>,ex5
+          )
+        },1000)
+        
+
+
+/**
+        6. Lists
+        */
+       
+        var UserList=({users,likesPerUser,updateUserLikes})=>{
+          return (
+            <div>
+              {
+                users.map((user)=>{
+                  return <div>
+                  <FancyNameBox user={user} likes={likesPerUser[user.id]} 
+                  onClick={()=>{updateUserLikes(user.id,likesPerUser[user.id]+1)}} />
+                  </div>
+                })
+              }
+            </div>
+            )
+        }
+        /* side effect */
+        var users=[
+          {id:1,firstName:"vimal",lastName:"esan"},
+          {id:2,firstName:"test",lastName:"test"}
+        ];
+        var likesPerUser ={
+          1:0,
+          2:0
+        }
+        function updateUserLikes(id,likes){
+            likesPerUser[id]=likes;
+            rerender();
+        }
+        /* side effect */
+        var rerender=()=>{
+            ReactDOM.render( /*side effect ReactDOM.render()*/
+              <UserList users={users} likesPerUser={likesPerUser} updateUserLikes={updateUserLikes}/>,ex6
+              )
+        }
+        rerender();
+    </script>
+  </body>
+</html>

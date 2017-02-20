@@ -1,0 +1,241 @@
+<html>
+  <head>
+     <script src="../js/react.js"></script>
+    <script src="../js/react-dom.js"></script>
+    <script src="../js/redux.js"></script>
+    <script src="../js/react-redux.js"></script>
+    <script type="text/javascript" src="../js/history.min.js"></script>
+    <script src="../js/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script  type="text/babel">
+    function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+    const CompiledPatternsCache = Object.create(null)
+function _compilePattern(pattern) {
+  let regexpSource = ''
+  const paramNames = []
+  const tokens = []
+
+  let match, lastIndex = 0, matcher = /:([a-zA-Z_$][a-zA-Z0-9_$]*)|\*\*|\*|\(|\)/g
+  while ((match = matcher.exec(pattern))) {
+    if (match.index !== lastIndex) {
+      tokens.push(pattern.slice(lastIndex, match.index))
+      regexpSource += escapeRegExp(pattern.slice(lastIndex, match.index))
+    }
+
+    if (match[1]) {
+      regexpSource += '([^/]+)'
+      paramNames.push(match[1])
+    } else if (match[0] === '**') {
+      regexpSource += '(.*)'
+      paramNames.push('splat')
+    } else if (match[0] === '*') {
+      regexpSource += '(.*?)'
+      paramNames.push('splat')
+    } else if (match[0] === '(') {
+      regexpSource += '(?:'
+    } else if (match[0] === ')') {
+      regexpSource += ')?'
+    }
+
+    tokens.push(match[0])
+
+    lastIndex = matcher.lastIndex
+  }
+
+  if (lastIndex !== pattern.length) {
+    tokens.push(pattern.slice(lastIndex, pattern.length))
+    regexpSource += escapeRegExp(pattern.slice(lastIndex, pattern.length))
+  }
+
+  return {
+    pattern,
+    regexpSource,
+    paramNames,
+    tokens
+  }
+}
+    function compilePattern(pattern) {
+      if (!CompiledPatternsCache[pattern])
+        CompiledPatternsCache[pattern] = _compilePattern(pattern)
+
+      return CompiledPatternsCache[pattern]
+    }
+        function matchPattern(pattern, pathname) {
+          // Ensure pattern starts with leading slash for consistency with pathname.
+          if (pattern.charAt(0) !== '/') {
+            pattern = `/${pattern}`
+          }
+          let { regexpSource, paramNames, tokens } = compilePattern(pattern)
+          
+          if (pattern.charAt(pattern.length - 1) !== '/') {
+            regexpSource += '/?' // Allow optional path separator at end.
+          }
+
+          // Special-case patterns like '*' for catch-all routes.
+          if (tokens[tokens.length - 1] === '*') {
+            regexpSource += '$'
+          }
+          
+          const match = pathname.match(new RegExp(`^${regexpSource}`, 'i'))
+          if (match == null) {
+            return null
+          }
+
+          const matchedPath = match[0]
+          let remainingPathname = pathname.substr(matchedPath.length)
+
+          if (remainingPathname) {
+            // Require that the match ends at a path separator, if we didn't match
+            // the full path, so any remaining pathname is a new path segment.
+            if (matchedPath.charAt(matchedPath.length - 1) !== '/') {
+              return null
+            }
+
+            // If there is a remaining pathname, treat the path separator as part of
+            // the remaining pathname for properly continuing the match.
+            remainingPathname = `/${remainingPathname}`
+          }
+            var paramMap={};
+            match.slice(1).forEach((v,i) => paramMap[paramNames[i]] = v && decodeURIComponent(v))
+          return {
+            remainingPathname,
+            paramMap
+          }
+        }
+
+        /*
+          routing:{
+            currentLocation:{
+              location:{
+                pathname:,
+                state,
+                query,
+              }
+            },
+            urls:{
+              entity:{
+                "url1":{
+                  name:
+                  pattern:
+                  match:
+                  tokens:
+                }
+              },
+              order:["url1",..],
+
+            },
+            currentParams:{
+              
+            }
+
+            }
+          }*/
+        const MATCH=1;
+        const EXACT_MATCH=2;
+        const NOT_MATCH=0;
+
+        var initialURLs={
+          "root":{
+            name:"root",
+            pattern:"/zd"
+          },
+          "tickets":{
+            name:"root",
+            pattern:"/zd/:portalId/tickets"
+          },
+          "ticketDetails":{
+            name:"root",
+            pattern:"/zd/:portalId/tickets/:ticketId"
+          }
+        }
+        var initialStateWithTokens = (initialState)=>{
+          return Object.keys(initialState).reduce((result,next)=>{
+            result[next]= Object.assign({},initialState[next],
+              {
+                tokens:compilePattern(initialState[next].pattern).tokens
+              })
+            return result;
+          },{})
+        }
+        console.log("initialStateWithTokens",initialStateWithTokens)
+        var routing=(state={urls:initialStateWithTokens(initialURLs),order:["root","tickets","ticketDetails"],location},action)=>{
+            console.log(action)
+            var currentParams;
+             if(action.type == "URL_CHANGE"){
+           return {
+              urls:state.order.reduce((result, next)=>{
+                console.log(state.urls[next],next)
+                var obj = matchPattern(state.urls[next].pattern,action.data.currentLocation.pathname);
+                var match=NOT_MATCH;
+                if(obj){
+                  currentParams=obj;
+                  if(obj.remainingPathname == ""){
+                    match=EXACT_MATCH;
+                  }
+                  else{
+                    match=MATCH;
+                  }
+                }
+                result[next] = url(state.urls[next],action,match);
+               return result;
+           },{}),
+              order:state.order,
+              paramMap:currentParams.paramMap,
+              location:location(state.location,action),//old location and new location are diff deep compare
+
+          }
+        }
+        return state;
+        }
+        var url=(state={},action,matchType)=>{
+            return Object.assign({},state,{match:matchType})
+        }
+        var location = (state={},action) => {
+          if(action.type == "URL_CHANGE"){
+            return action.data.currentLocation;
+          }
+          return state;
+        }
+
+
+       /* var routing =(state={
+        },action) =>{
+          if(action.type == "URL_CHANGE"){
+            return {
+              
+              urls:(state.currentLocation && state.currentLocation.location.pathname || "") == action.data.currentLocation.pathname?state.urls : urls(state.urls,action) //missing deep compare query param
+            }
+          }
+          return state;
+        }*/
+        
+        const history = History.createBrowserHistory({
+          //basename:'/zd',
+          //getUserConfirmation:(message, callback) => callback(window.confirm("vimal"+message))
+        });//hash, browser history, memory hisoty
+
+            // Get the current location.
+            //var location = history.location
+
+            // Listen for changes to the current location.
+            var unlisten = history.listen((location, action) => {
+              // location is an object like window.location
+              //console.log(action, location.pathname, location.state)
+              console.log(location.pathname)
+              console.log(routing(undefined,{type:"URL_CHANGE",data:{currentLocation:location}}))
+            })
+            //var unblock=history.block('Are you sure you want to leave this page?')
+            // unblock();
+            
+            // Use push, replace, and go to navigate around.
+            history.push('/zd/portalId/tickets', { some: 'state' })
+
+            // To stop listening, call the function returned from listen().
+            unlisten()
+    </script>
+  </body>
+</html>

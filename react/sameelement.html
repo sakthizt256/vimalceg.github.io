@@ -10,40 +10,37 @@
   </head>
   <body>
     <div id="react"></div>
-    <script type="text/babel">
-      class HelloMessage extends React.Component {
-        render() {
-          return <div>{this.props.children}</div>
+    <textarea readonly style="height:100%;width:100%">
+    
+
+    </textarea>
+    <script  type="text/babel">
+      class Test extends React.Component{
+        constructor(props) {
+          super(props);
+          this.state={
+            count:0
+          }
+        }
+        render(){
+          console.log("test");
+          if(this.state.count<5){
+            this.el=<Test1/>;
+          }
+          
+          return <div>
+          <div onClick={()=>{this.setState({count:this.state.count+1})}}>click</div>{this.state.count}
+          {this.el}
+          </div>
         }
       }
-      var str='<script>';
-      var str1='alert("test")<';
-      var str2='/script>';
-      setTimeout(function(){
-        ReactDOM.render(<HelloMessage>{str+str1+str2}</HelloMessage>, react);
-        
-      },1000)
-      
-    </script>
-
-
-
-    <script  type="text/babel">
-      class HelloMessage extends React.Component {
-        render() {
-          return <div>
-          {/*
-          test{this.props.a+this.props.b+this.props.c+this.props.d+this.props.e+this.props.f}
-        */}
-          <a href={this.props.href}>test</a>
-
-          </div>
-        }   
-      } 
-
-   // ReactDOM.render(<HelloMessage a="<" b="script>" c="test" d="<" e="/script>" href="javascript:alert('a')" />, react);
+      class Test1 extends React.Component{
+        render(){
+          console.log("test1");
+          return <div>test1</div>
+        }
+      }
+      ReactDOM.render(<Test/>,react);
     </script>
   </body>
 </html>
-
- 

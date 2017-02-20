@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script  type="text/babel">
+      class Child extends React.Component{
+        render(){
+          console.log("Child - render")
+          return <div>Child - {this.props.number}</div>
+        }
+        componentDidMount(){
+          console.log("Child - componentDidMount");
+        }
+      }
+      Child = ReactRedux.connect((state,props)=>{
+        return {
+          number:props.number+state.number
+        }
+      })(Child)
+
+      class Root extends React.Component{
+        render(){
+          console.log("Root - render")
+          return <div>Root -{this.props.number}
+             <Child number={this.props.number+1}/>
+              <div onClick={()=>{
+                setTimeout(()=>{ this.props.dispatch({type:"INC"})},1);
+               // this.props.dispatch({type:"INC"})
+              }
+              }>Inc</div>
+          </div>
+        }
+        componentDidMount(){
+          console.log("Root - componentDidMount");
+        }
+      }
+      Root = ReactRedux.connect((state,props)=>{
+        return {number:state.number}
+      })(Root)
+      
+      var reducer = Redux.combineReducers({
+        number:(state=0,action)=>{
+          if(action.type=="INC"){
+            return state+1;
+          }
+          return state;
+        }
+      })
+      var store = Redux.createStore(reducer);
+      ReactDOM.render(
+        <ReactRedux.Provider store={store}>
+          <Root>
+           
+          </Root>
+          </ReactRedux.Provider>
+        ,
+        document.getElementById('react')
+      );
+    </script>
+  </body>
+</html>

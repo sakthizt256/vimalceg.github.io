@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+    <script  type="text/babel">
+      var state=[];
+      function add10000(){
+          for(var i=0;i<100000;i++){
+            var d=Math.random();
+            state.push({id:d,name:"name"+d});
+          }
+      }
+      add10000();
+      function add(){
+        var d=Math.random();
+            state.push({id:d,name:"name"+d});
+      }
+      class NameList extends React.Component{
+        render(){
+          return <div>
+                {
+                  this.props.names.map((per,t)=>{
+                  return (
+                    <div key={"name"+t}>
+                      <div><span>id - </span><span>{per.id}</span></div>
+                      <div><span>name - </span><span>{per.name}</span></div>
+                    </div>
+                  )
+                })
+              }
+              </div>
+        }
+      }
+      var ci = setInterval(function(){
+        add();
+
+        console.log("before - ",state.length,'- ',performance.memory);
+        console.time("render")
+        ReactDOM.render(<NameList names={state}/>,react)
+        console.timeEnd("render")
+        console.log("after - ",state.length,'- ',performance.memory);
+      },1)
+      setTimeout(function(){
+        clearInterval(ci);
+      },20000)
+      
+    </script>
+  </body>
+</html>
