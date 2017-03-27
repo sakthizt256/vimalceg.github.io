@@ -21,7 +21,7 @@
     			}
     		}
     		componentDidMount() {
-    			fetch("data.json").then((res)=>res.json()).then((res)=>{
+    			fetch("data.js").then((res)=>res.json()).then((res)=>{
     				this.setState({metas:res});
             var m = document.createElement('meta'); 
             m.name = 'title'; 
@@ -39,7 +39,15 @@
     			return ( <div> 
     				{
     					metas && metas.map((meta,index)=>{
-    						return <div><a href={index+".html"}>{meta.title}</a></div>
+    						return <div><a href={index+".<!DOCTYPE html>
+                <html>
+                <head>
+                  <title></title>
+                </head>
+                <body>
+                
+                </body>
+                </html>"}>{meta.title}</a></div>
     					})
     				}
     				</div> 
