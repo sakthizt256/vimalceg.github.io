@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.5.2/redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-redux/4.4.5/react-redux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router/2.5.2/ReactRouter.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-redux/4.0.5/ReactRouterRedux.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  </head>
+  <body>
+    <div id="react"></div>
+   
+    <script  type="text/babel">
+     
+    class  AgentList extends React.Component{
+    componentDidMount(){
+        console.log("mount")
+        }
+        render(){
+        var {agents }= this.props;
+        return <div>
+        {
+        agents.map((agent)=>{
+            return <Agent key={"id"+agent.id} id={agent.id} name={agent.name}/>
+        })
+        }
+        </div>
+        } 
+        componentDidUpdate(){
+            console.log("update")
+        }
+    }
+    var Agent=({id,name})=>{
+    return <div>{name}</div>
+    }
+
+    ReactDOM.render(<AgentList agents={[{id:"1",name:"vimal",confirm:true}]}/>, react);
+    setTimeout(()=>{
+    ReactDOM.render(<AgentList agents={[{id:"1",name:"vimalesan",confirm:true}]}/>, react) 
+    },1000)
+    </script>
+  </body>
+</html>

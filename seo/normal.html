@@ -1,0 +1,25 @@
+<!Doctype html>
+<html>
+  <head>
+  </head>
+  <body>
+
+    <div id="container"></div>
+    
+    <script>
+        var req= new XMLHttpRequest();
+        req.open("GET","/seo/api");
+        req.send()
+        req.onreadystatechange=function(){
+            console.log("XMLHttpRequest",req.responseText);
+            document.body.innerHTML=req.responseText
+        }
+    			/*fetch("/seo/api").then((res)=>res.text()).then((res)=>{
+                    console.log(res)
+    				 document.getElementById('container').innerHTML=res;
+    			})*/
+       
+    </script>
+  </body>
+</html>
+

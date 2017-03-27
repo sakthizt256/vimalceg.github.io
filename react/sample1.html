@@ -1,0 +1,48 @@
+class TItem extends React.Component{
+	constructor(props){
+    	super(props);
+        this.state={
+        	isCOpen:false
+        } 
+        this.toggleComment=this.toggleComment.bind(this)
+    }
+    componentWillReceiveProps(nextProps){
+    	this.setState({isCOpen:false})
+    }
+    toggleComment(){
+    	this.setState({
+        	isCOpen:!this.state.isCOpen
+        });
+    }
+	render(){
+	return <div>{this.props.id}-{this.props.subject}
+    	<div onClick={this.toggleComment}>icon</div>
+    	{this.state.isCOpen?<div>Comment</div>:null}
+    </div>
+	}
+}
+class TLItem extends React.Component{
+	constructor(){
+    	super()
+    	this.state={
+        	items:[{id:1,subject:"vimal"},{id:2,subject:"vimal1"}]
+        }
+        this.next=this.next.bind(this)
+    }
+    next(){
+    	this.setState({
+        	items:[{id:3,subject:"vimal"},{id:4,subject:"vimal1"}]
+        })
+    }
+	render(){
+	return <div>
+    	{
+        	this.state.items.map((ticket)=>{
+            	return <TItem subject={ticket.subject} id={ticket.id}/>
+            })
+        }
+        <div onClick={this.next}>next</div>
+        </div>
+}
+}
+ReactDOM.render(<TLItem items={[{id:1,subject:"vimal"},{id:1,subject:"vimal1"}]} />, mountNode);

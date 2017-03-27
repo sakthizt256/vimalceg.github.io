@@ -32,16 +32,16 @@
       class HelloMessage extends React.Component {
         render() {
           return <div>
-          {/*
-          test{this.props.a+this.props.b+this.props.c+this.props.d+this.props.e+this.props.f}
-        */}
+          {
+            test{this.props.a+this.props.b+this.props.c+this.props.d+this.props.e+this.props.f}
+          }
           <a href={this.props.href}>test</a>
 
           </div>
         }   
       } 
 
-   // ReactDOM.render(<HelloMessage a="<" b="script>" c="test" d="<" e="/script>" href="javascript:alert('a')" />, react);
+    ReactDOM.render(<HelloMessage a="<" b="script>" c="test" d="<" e="/script>" href="javascript:alert('a')" />, react);
     </script>
   </body>
 </html>

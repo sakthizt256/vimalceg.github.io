@@ -1,0 +1,4 @@
+<div> test</div>
+<script type="application/javascript">
+console.log('ok');
+</script>
