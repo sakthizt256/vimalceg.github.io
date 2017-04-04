@@ -21,8 +21,7 @@
                 }
             }
             componentDidMount() {
-                fetch("data.html").then((res)=>res.json()).then((res)=>{
-                    this.setState({metas:res});
+               
             var m = document.createElement('meta'); 
             m.name = 'title'; 
             m.content = 'List page'; 
@@ -31,7 +30,7 @@
             m.name = 'description'; 
             m.content = 'Meta check description List page'; 
             document.head.appendChild(m);
-                })
+                
 
             }
             render(){
