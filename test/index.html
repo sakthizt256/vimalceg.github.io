@@ -1,0 +1,22 @@
+<html>
+	<body>
+		<div id="react"></div>
+		<div id="website"></div>
+		<!-- plugin js start-->
+		<script src="./js/react.vendor.js"></script>
+		<script src="./js/vendor.js"></script>
+		<script src="./js/main.js"></script>
+		<!-- plugin js end-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.9/react.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.9/react-dom.min.js"></script>
+		<script>
+			console.log("website react version",React.version)
+			class Testing extends React.Component{
+					render(){
+						return React.createElement("div",null,"Testing...")
+					}
+			}
+			ReactDOM.render(React.createElement(Testing) , document.getElementById("website"));
+		</script>
+	</body>
+</html>

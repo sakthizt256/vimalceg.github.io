@@ -23,10 +23,14 @@
         return state;
       };
       var store=Redux.createStore(Redux.combineReducers({todo}),{todo:["todo0"]});
-      console.log(store.getState());
+      store.subscribe(()=>{
+        console.log(store.getState());  
+      })
+      
       store.dispatch({type:"ADD",data:"todo1"});
       store.dispatch({type:"ADD",data:"todo2"});
-      console.log(store.getState());
+      store.dispatch({type:"ADD1",data:"todo2"});
+      //console.log(store.getState());
     </script>
   </body>
 </html>

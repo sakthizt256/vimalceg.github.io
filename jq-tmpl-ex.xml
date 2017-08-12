@@ -1,0 +1,21 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<body>
+<div id="movieList">
+</div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+
+<script id="movieTemplate" type="text/x-jquery-tmpl"><![CDATA[
+	${name}
+]]>
+</script>
+<script>
+	 $(document).ready(()=>{
+	 	console.log("ready",$("#movieTemplate"))
+	 	$("#movieTemplate").tmpl({name:"&lt; ü"}).appendTo($("#movieList"))	
+	})
+		  
+</script>
+</body>
+</html>

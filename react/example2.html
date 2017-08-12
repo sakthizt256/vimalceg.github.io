@@ -10,24 +10,16 @@
   </head>
   <body>
     <div id="react"></div>
-    <pre>
-      Basic react
-        1. Create Custom Component using React
-
-        class HelloWorld extends React.Component{
-          render(){
-            return <h1>HelloWorld</h1>
-          }
-        }
-        ReactDOM.render(
-          <HelloWorld/>,
-          document.getElementById('react')
-        );
-    </pre>
+    
     <script  type="text/babel">
       class HelloWorld extends React.Component{
+        click(){
+            console.log('click')
+        }
         render(){
-          return <h1>HelloWorld</h1>
+          return <h1>
+          <div onClick={this.click}>click</div>
+          HelloWorld</h1>
         }
       }
 
