@@ -2,31 +2,30 @@
 	<body>
 		<div id="content"/>
 		<script>
-			function mutateDom(el,i){
-				var data = el.innerText;
-				if(data != i){
-					el.innerText=i;
-				}
-			}
-			var el =  document.getElementById("content");
-			console.time("mutate");
-			for(i=0;i<1000;i++){
-				mutateDom(el,i);
-			}
-			console.timeEnd("mutate");
-			console.time("readwrite")
-			console.time("read");
-			for(i=0;i<1000;i++){
-				el.innerText;
-			}
-			console.timeEnd("read");
-			console.time("write");
-			for(i=0;i<1000;i++){
-				el.innerText=i;
-			}
-			console.timeEnd("write");
-			console.timeEnd("readwrite");
-
-		</script>
+		function mutateDom(el, i) {
+  var data = el.innerText;
+  if (data != i) {
+    el.innerText = i;
+  }
+}
+var el = document.getElementById('content');
+console.time('mutate');
+for (i = 0; i < 1000; i++) {
+  mutateDom(el, i);
+}
+console.timeEnd('mutate');
+console.time('readwrite');
+console.time('read');
+for (i = 0; i < 1000; i++) {
+  el.innerText;
+}
+console.timeEnd('read');
+console.time('write');
+for (i = 0; i < 1000; i++) {
+  el.innerText = i;
+}
+console.timeEnd('write');
+console.timeEnd('readwrite');
+</script>
 	</body>
 </html>

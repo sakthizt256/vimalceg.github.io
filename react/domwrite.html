@@ -1,0 +1,14 @@
+<html>
+	<body>
+		<div id="content"/>
+		<script>
+  console.log('10000 times dom write');
+console.time('write');
+for (i = 0; i < 10000; i++) {
+  var el = document.getElementById('content');
+  el.innerText = i;
+}
+console.timeEnd('write');
+</script>
+	</body>
+</html>

@@ -1,0 +1,15 @@
+<html>
+	<body>
+		<div id="content">test</div>
+		<script>
+  console.log('10000 times dom read write');
+console.time('readwrite');
+for (i = 0; i < 10000; i++) {
+  var el = document.getElementById('content');
+  var text = el.innerText;
+  el.innerText = 'test -' + i;
+}
+console.timeEnd('readwrite');
+</script>
+	</body>
+</html>
